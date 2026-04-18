@@ -1,0 +1,88 @@
+@startuml diagrama-componentes
+skinparam componentStyle rectangle
+
+package "View (Front-end)" {
+  [Web UI Aluno]
+  [Web UI Professor]
+  [Web UI Empresa]
+}
+
+package "Controller (Aplicacao)" {
+  [AuthController]
+  [AlunoController]
+  [ProfessorController]
+  [InstituicaoController]
+  [EmpresaController]
+  [ExtratoController]
+  [TransacaoController]
+  [ResgateController]
+  [SaldoSemestralController]
+}
+
+package "Service (Regra de Negocio)" {
+  [AuthService]
+  [AlunoService]
+  [ProfessorService]
+  [InstituicaoService]
+  [EmpresaService]
+  [ExtratoService]
+  [TransacaoService]
+  [ResgateService]
+  [NotificacaoService]
+  [SaldoSemestralService]
+}
+
+package "Model/Persistencia" {
+  [Entidades JPA]
+  [Repositorios]
+  database "Banco de Dados" as DB
+}
+
+[Web UI Aluno] --> [AuthController]
+[Web UI Professor] --> [AuthController]
+[Web UI Empresa] --> [AuthController]
+
+[Web UI Aluno] --> [ExtratoController]
+[Web UI Aluno] --> [ResgateController]
+
+[Web UI Professor] --> [TransacaoController]
+[Web UI Professor] --> [ExtratoController]
+[Web UI Professor] --> [SaldoSemestralController]
+
+[Web UI Empresa] --> [EmpresaController]
+
+[AuthController] --> [AuthService]
+[AlunoController] --> [AlunoService]
+[ProfessorController] --> [ProfessorService]
+[InstituicaoController] --> [InstituicaoService]
+[EmpresaController] --> [EmpresaService]
+[ExtratoController] --> [ExtratoService]
+[TransacaoController] --> [TransacaoService]
+[ResgateController] --> [ResgateService]
+[SaldoSemestralController] --> [SaldoSemestralService]
+
+[TransacaoService] --> [Repositorios]
+[ExtratoService] --> [Repositorios]
+[ResgateService] --> [Repositorios]
+[EmpresaService] --> [Repositorios]
+[ProfessorService] --> [Repositorios]
+[InstituicaoService] --> [Repositorios]
+
+[ResgateService] --> [NotificacaoService]
+[SaldoSemestralService] --> [Repositorios]
+
+[Repositorios] --> [Entidades JPA]
+[Repositorios] --> DB
+
+note right of [TransacaoService]
+Valida saldo e mensagem obrigatoria
+na distribuicao de moedas
+end note
+
+note right of [ResgateService]
+Gera codigo unico
+Dispara e-mails de confirmacao
+Debita saldo automaticamente
+end note
+
+@enduml

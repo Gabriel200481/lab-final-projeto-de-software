@@ -1,0 +1,114 @@
+@startuml diagrama-classes
+skinparam classAttributeIconSize 0
+
+enum PapelUsuario {
+  ALUNO
+  PROFESSOR
+  EMPRESA
+}
+
+class Usuario {
+  +id: UUID
+  +nome: String
+  +email: String
+  +senhaHash: String
+  +papel: PapelUsuario
+  +ativo: Boolean
+}
+
+class Aluno {
+  +cpf: String
+  +rg: String
+  +endereco: String
+  +curso: String
+  +saldoAtual: BigDecimal
+}
+
+class Professor {
+  +cpf: String
+  +departamento: String
+  +saldoAtual: BigDecimal
+}
+
+class EmpresaParceira {
+  +nomeFantasia: String
+}
+
+class InstituicaoEnsino {
+  +id: UUID
+  +nome: String
+  +sigla: String
+}
+
+class TransacaoMoeda {
+  +id: UUID
+  +remetenteId: UUID
+  +destinatarioId: UUID
+  +dataHora: LocalDateTime
+  +valor: BigDecimal
+  +mensagem: String
+}
+
+class Vantagem {
+  +id: UUID
+  +descricao: String
+  +fotoUrl: String
+  +custoMoedas: BigDecimal
+  +ativa: Boolean
+}
+
+class ResgateVantagem {
+  +id: UUID
+  +alunoId: UUID
+  +vantagemId: UUID
+  +dataHora: LocalDateTime
+  +codigoUnico: String
+}
+
+class Cupom {
+  +id: Long
+  +codigo: String
+  +qrcodeUrl: String
+  +dataGeracao: LocalDateTime
+  +dataResgate: LocalDateTime
+  +utilizado: Boolean
+}
+
+class RegraSemestralSaldo {
+  +id: UUID
+  +valorRecarga: BigDecimal = 1000
+  +aplicarRecarga(professor: Professor)
+}
+
+Usuario <|-- Aluno
+Usuario <|-- Professor
+Usuario <|-- EmpresaParceira
+
+Aluno "*" --> "1" InstituicaoEnsino : vinculado a
+Professor "*" --> "1" InstituicaoEnsino : vinculado a
+
+TransacaoMoeda "*" --> "1" Professor : remetenteId
+TransacaoMoeda "*" --> "1" Aluno : destinatarioId
+
+EmpresaParceira "1" --> "*" Vantagem : oferece
+ResgateVantagem "*" --> "1" Aluno : alunoId
+ResgateVantagem "*" --> "1" Vantagem : vantagemId
+Cupom "*" --> "1" Aluno : usuario
+Cupom "*" --> "1" Vantagem : vantagem
+
+RegraSemestralSaldo "1" --> "*" Professor : aplica em
+
+note bottom of TransacaoMoeda
+Registro obrigatorio de:
+- remetente
+- destinatario
+- valor
+- mensagem
+end note
+
+note bottom of RegraSemestralSaldo
+A cada semestre:
+novo saldo = saldo atual + 1000
+end note
+
+@enduml

@@ -1,0 +1,56 @@
+@startuml casos-de-uso
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F7FAFC
+  BorderColor #2D3748
+}
+
+actor Aluno
+actor Professor
+actor "Empresa Parceira" as Empresa
+
+rectangle "Sistema de Moeda Estudantil" {
+  usecase "Login/Autenticacao" as UC_LOGIN
+
+  usecase "Cadastrar-se\n(Aluno)" as UC_CAD_ALUNO
+  usecase "Consultar Extrato\n(Aluno)" as UC_EXT_ALUNO
+  usecase "Resgatar Vantagem" as UC_RESGATE
+
+  usecase "Distribuir Moedas\n(com mensagem)" as UC_DISTRIBUIR
+  usecase "Consultar Extrato\n(Professor)" as UC_EXT_PROF
+  usecase "Cadastrar-se\n(Professor)" as UC_CAD_PROF
+
+  usecase "Cadastrar-se\n(Empresa)" as UC_CAD_EMP
+  usecase "Cadastrar Vantagem\n(descricao + foto + custo)" as UC_CAD_VANT
+}
+
+Aluno --> UC_CAD_ALUNO
+Aluno --> UC_EXT_ALUNO
+Aluno --> UC_RESGATE
+
+Professor --> UC_DISTRIBUIR
+Professor --> UC_EXT_PROF
+Professor --> UC_CAD_PROF
+
+Empresa --> UC_CAD_EMP
+Empresa --> UC_CAD_VANT
+
+UC_EXT_ALUNO ..> UC_LOGIN : <<include>>
+UC_RESGATE ..> UC_LOGIN : <<include>>
+UC_DISTRIBUIR ..> UC_LOGIN : <<include>>
+UC_EXT_PROF ..> UC_LOGIN : <<include>>
+UC_CAD_VANT ..> UC_LOGIN : <<include>>
+UC_CAD_PROF ..> UC_LOGIN : <<include>>
+
+note right of UC_DISTRIBUIR
+Mensagem justificativa obrigatoria
++ validacao de saldo do professor
+end note
+
+note right of UC_RESGATE
+Gera codigo unico e envia e-mails
+para aluno e empresa
+end note
+
+@enduml

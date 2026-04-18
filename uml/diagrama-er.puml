@@ -1,0 +1,76 @@
+@startuml diagrama-er
+hide circle
+skinparam linetype ortho
+
+entity "usuario" as usuario {
+  * id : uuid <<PK>>
+  --
+  nome : varchar
+  email : varchar <<UNIQUE>>
+  senha_hash : varchar
+  papel : varchar
+  ativo : boolean
+}
+
+entity "instituicao_ensino" as instituicao {
+  * id : uuid <<PK>>
+  --
+  nome : varchar <<UNIQUE>>
+  sigla : varchar <<UNIQUE>>
+}
+
+entity "aluno" as aluno {
+  * id : uuid <<PK, FK usuario.id>>
+  --
+  cpf : varchar <<UNIQUE>>
+  rg : varchar
+  endereco : varchar
+  curso : varchar
+  instituicao_id : uuid <<FK>>
+  saldo_atual : decimal
+}
+
+entity "professor" as professor {
+  * id : uuid <<PK, FK usuario.id>>
+  --
+  cpf : varchar <<UNIQUE>>
+  departamento : varchar
+  instituicao_id : uuid <<FK>>
+  saldo_atual : decimal
+}
+
+entity "empresa_parceira" as empresa {
+  * id : uuid <<PK, FK usuario.id>>
+  --
+  nome_fantasia : varchar
+}
+
+entity "vantagem" as vantagem {
+  * id : uuid <<PK>>
+  --
+  descricao : varchar
+  foto_url : varchar
+  custo_moedas : decimal
+  ativa : boolean
+  empresa_id : uuid <<FK>>
+}
+
+entity "resgate_vantagem" as resgate {
+  * id : uuid <<PK>>
+  --
+  aluno_id : uuid <<FK>>
+  vantagem_id : uuid <<FK>>
+  codigo_unico : varchar <<UNIQUE>>
+  data_hora : datetime
+}
+
+usuario ||--o| aluno
+usuario ||--o| professor
+usuario ||--o| empresa
+instituicao ||--o{ aluno
+instituicao ||--o{ professor
+empresa ||--o{ vantagem
+aluno ||--o{ resgate
+vantagem ||--o{ resgate
+
+@enduml

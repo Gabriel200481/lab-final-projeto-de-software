@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:moedaestudantil
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  h2:
+    console:
+      enabled: true
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:email.teste.lab03@gmail.com}
+    password: ${MAIL_PASSWORD:senha-fake-lab03-123}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:Lab03JwtSecretKeyMuitoSeguraCom32CaracteresMinimo123}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:120}
+
+app:
+  mail:
+    destino-aluno-padrao: gabrielvieira200481@gmail.com
+    destino-empresa-padrao: thalescarvalho622@gmail.com
+    fail-on-error: ${MAIL_FAIL_ON_ERROR:false}
+  qrcode:
+    basepath: ${APP_QRCODE_BASEPATH:qrcodes/}
+    baseurl: ${APP_QRCODE_BASEURL:http://localhost:8080/api/qrcodes/}
+    width: ${APP_QRCODE_WIDTH:200}
+    height: ${APP_QRCODE_HEIGHT:200}
+
+server:
+  port: 8080

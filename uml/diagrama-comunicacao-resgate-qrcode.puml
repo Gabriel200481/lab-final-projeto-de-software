@@ -1,0 +1,74 @@
+@startuml Diagrama de Comunicação - Resgate com QR Code
+
+title Diagrama de Comunicação: Aluno Resgata Vantagem (Gera QR Code)
+
+object ":AlunoController" as aluno_ctrl
+object ":ResgateVantagemService" as resgate_service
+object ":QrCodeService" as qr_service
+object ":CupomRepository" as cupom_repo
+object ":EmailService" as email_svc
+object ":FileService" as file_svc
+
+aluno_ctrl --> aluno_ctrl : 1: autenticarAluno()
+aluno_ctrl --> resgate_service : 2: resgatarVantagem(vantagemId)
+
+resgate_service --> resgate_service : 3: validarSaldoAluno()
+resgate_service --> resgate_service : 4: validarVantagemAtiva()
+resgate_service --> resgate_service : 5: gerarCodigoCupom()
+
+resgate_service --> qr_service : 6: gerarQrCode(codigo)
+qr_service --> qr_service : 7: criarBitMatrix()
+qr_service --> file_svc : 8: salvarPNG(qrcode.png)
+file_svc --> file_svc : 9: persistirArquivo()
+qr_service --> qr_service : 10: gerarUrlPublica()
+
+resgate_service --> cupom_repo : 11: criarCupom(codigo, qrcodeUrl)
+cupom_repo --> cupom_repo : 12: salvarNoBD()
+
+resgate_service --> resgate_service : 13: decrementarSaldoAluno()
+resgate_service --> email_svc : 14: construirEmailComQrCode(qrcodeUrl)
+email_svc --> email_svc : 15: anexarQrCodeImage()
+resgate_service --> email_svc : 16: enviarEmail()
+
+email_svc --> email_svc : 17: conectarSMTP()
+email_svc --> email_svc : 18: tentarEnviar()
+email_svc --> email_svc : 19: fallbackSeErro()
+
+resgate_service --> aluno_ctrl : 20: retornar(cupomDTO)
+aluno_ctrl --> aluno_ctrl : 21: renderizarCodigo()
+
+note right of resgate_service
+  //Orquestração completa//
+  - Validações (saldo, vantagem)
+  - Geração código único
+  - Criação QR Code
+  - Persistência cupom
+  - Email transacional
+  - Tratamento erros
+end note
+
+note right of qr_service
+  //Geração QR Code//
+  Google ZXing
+  Formato PNG 200x200px
+  URL pública para email
+end note
+
+note right of cupom_repo
+  //Audit trail//
+  Cupom vinculado a:
+  - Usuario
+  - Vantagem
+  - Data resgate
+  - Bool utilizado
+end note
+
+note right of email_svc
+  //Email com embed QR//
+  1. Anexa PNG do QR
+  2. Inclui código ABC-XXXXX-XYZ
+  3. Link para rastreamento
+  4. Fallback file se SMTP cair
+end note
+
+@enduml

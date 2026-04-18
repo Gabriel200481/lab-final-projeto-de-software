@@ -1,0 +1,100 @@
+@startuml sequencia-distribuicao-moedas
+!theme plain
+skinparam Padding 40
+skinparam defaultFontName Manrope
+skinparam defaultFontSize 11
+
+title Sequência: Distribuição de Moedas (Lab04S01)
+
+actor Professor
+participant "Frontend\n(UI)" as UI
+participant "TransacaoController" as TC
+participant "TransacaoService" as TS
+participant "ProfessorService" as PS
+participant "AlunoService" as AS
+participant "NotificacaoService" as NS
+participant "TransacaoRepository" as TR
+database "H2 Database" as DB
+
+Professor -> UI: Preenche formulário\n(Aluno, Valor, Motivo)
+activate UI
+UI -> TC: POST /api/transacoes/distribuicao\n{alunoId, valor, motivo}
+activate TC
+
+TC -> TS: distribuirMoedas(profId, alunoId, valor, motivo)
+activate TS
+
+TS -> PS: verificarSaldoProfessor(profId, valor)
+activate PS
+PS -> DB: SELECT saldo FROM professor WHERE id = profId
+PS --> TS: saldoSuficiente = true/false
+deactivate PS
+
+alt Saldo INSUFICIENTE
+  TS --> TC: throws BalancoInsuficienteException
+  TC --> UI: HTTP 400 Bad Request
+  UI --> Professor: ❌ Erro: Saldo insuficiente!
+else Saldo SUFICIENTE
+
+  TS -> PS: debitarSaldoProfessor(profId, valor)
+  activate PS
+  PS -> DB: UPDATE professor SET saldo = saldo - ? WHERE id = ?
+  PS --> TS: sucesso
+  deactivate PS
+
+  TS -> AS: creditarSaldoAluno(alunoId, valor)
+  activate AS
+  AS -> DB: UPDATE aluno SET saldo = saldo + ? WHERE id = ?
+  AS --> TS: sucesso
+  deactivate AS
+
+  TS -> TR: salvarTransacao(new TransacaoMoeda(...))
+  activate TR
+  note right of TR
+    TransacaoMoeda {
+      profId, alunoId
+      valor, motivo
+      tipo: DISTRIBUICAO
+      dataCriacao: NOW()
+    }
+  end note
+  TR -> DB: INSERT INTO transacao_moeda
+  TR --> TS: transacaoId
+  deactivate TR
+
+  TS -> NS: notificarAluno(alunoId, valor, motivo)
+  activate NS
+  note right of NS
+    Email Template:
+    "Você recebeu X moedas!
+     Motivo: {motivo}
+     Saldo: {novoSaldo}"
+  end note
+  NS -> DB: SELECT email FROM aluno WHERE id = alunoId
+  NS -> NS: enviarEmail(aluno.email, template)
+  NS --> TS: emailEnviado = true/false
+  deactivate NS
+
+  TS --> TC: HTTP 200 OK\n{transacaoId, novoSaldoAluno}
+  deactivate TS
+
+  TC --> UI: Operação bem-sucedida ✅
+  deactivate TC
+  
+  UI --> Professor: ✅ Moedas distribuídas!\n{Aluno, Valor, Data/Hora}
+  
+end
+
+deactivate UI
+
+note over Professor, DB
+  **Regra de Negócio Validada:**
+  ✓ Professor tem saldo suficiente
+  ✓ Motivo (justificativa) é obrigatório
+  ✓ Saldo debitado do professor
+  ✓ Saldo creditado do aluno
+  ✓ Transação persistida no banco
+  ✓ Email de notificação disparado
+end note
+
+@enduml

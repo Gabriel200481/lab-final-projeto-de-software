@@ -1,0 +1,70 @@
+@startuml Diagrama de Implantação - Arquitetura Cloud
+
+title Diagrama de Implantação: Sistema Moeda Estudantil em Produção
+
+node "Navegador Usuário" {
+    component [Frontend\nHTML/CSS/JavaScript] as frontend
+}
+
+node "Render Cloud (SP)" {
+    node "Application Server" {
+        component [Spring Boot 3.3.5] as spring_app
+        component [JWT Auth] as jwt
+        component [QR Code Service] as qr_service
+    }
+    
+    node "Database Server" {
+        database "PostgreSQL 15" as pg_db
+    }
+    
+    component [Application Logs] as app_logs
+}
+
+node "Email Service (SendGrid)" {
+    component [SMTP Server] as smtp
+}
+
+node "Storage (Render)" {
+    folder "QR Code Images" as qr_storage
+    folder "Log Files" as log_storage
+}
+
+frontend --|> spring_app : HTTP/HTTPS\nPort 443
+spring_app --> jwt : Validar Token
+spring_app --> pg_db : SQL Queries JDBC
+spring_app --> qr_service : Gerar QR Code
+qr_service --> qr_storage : Salvar PNG
+spring_app --> app_logs : Escrever Logs
+app_logs --> log_storage : Persistir
+spring_app --> smtp : Enviar Email SMTP
+
+note right of frontend
+  Usuário acessa aplicação
+  Localhost: http://localhost:8080/
+  Produção: https://moeda-estudantil.onrender.com/
+end note
+
+note right of spring_app
+  Aplicação Java 21 com Spring Boot
+  Timezone: America/Sao_Paulo
+  Memory: 512MB (free tier Render)
+end note
+
+note right of pg_db
+  Base PostgreSQL
+  Backup automático Render
+  Replicação para HA (pago)
+end note
+
+note right of qr_service
+  Google ZXing Library
+  Gera PNG 200x200px
+  Armazena URL pública
+end note
+
+note right of smtp
+  Email com QR Code anexado
+  Fallback em arquivo se SMTP falhar
+end note
+
+@enduml
