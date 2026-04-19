@@ -1,154 +1,36 @@
 @startuml sequencia-resgate-vantagens
 !theme plain
-skinparam Padding 40
-skinparam defaultFontName Manrope
-skinparam defaultFontSize 11
-
-title Sequência: Resgate/Troca de Vantagem pelo Aluno (Lab04S03)
+title Sequencia: Troca de vantagem e cupom QR (implementacao atual)
 
 actor Aluno
-participant "Frontend\n(UI)" as UI
+participant "Frontend (app.js)" as UI
 participant "ResgateController" as RC
 participant "ResgateService" as RS
-participant "AlunoService" as AS
-participant "VantagemService" as VS
-participant "CodigoGerador" as CG
+participant "AlunoRepository" as AR
+participant "VantagemRepository" as VR
+participant "ResgateVantagemRepository" as RR
+participant "QrCodeService" as QR
+participant "CupomRepository" as CR
 participant "NotificacaoService" as NS
-participant "ResgateRepository" as RR
-database "H2 Database" as DB
 
-Aluno -> UI: Seleciona vantagem do catálogo
-activate UI
-note right of UI
-  **Catálogo Exibido ao Aluno:**
-  • Vantagens de empresas parceiras
-  • Nome, descrição, foto, custo
-  • Botão "Resgatar"
-end note
+Aluno -> UI: Escolhe vantagem e confirma resgate
+UI -> RC: POST /api/resgates
+RC -> RS: resgatar(request)
+RS -> AR: findById(alunoId)
+RS -> VR: findByIdAndAtivaTrue(vantagemId)
 
-UI -> RC: POST /api/resgates\n{alunoId, vantagemId}
-activate RC
-
-RC -> RS: resgatar(alunoId, vantagemId)
-activate RS
-
-RS -> VS: verificarVantagemExiste(vantagemId)
-activate VS
-VS -> DB: SELECT * FROM vantagem WHERE id = vantagemId
-alt Vantagem NÃO existe
-  VS --> RS: throws VantagemNaoEncontradaException
-  RS --> RC: HTTP 404
-  RC --> UI: ❌ Vantagem não encontrada
-else Vantagem OK
-  VS --> RS: vantagemValida, custo = X moedas
+alt saldo insuficiente
+  RS --> RC: BusinessException
+  RC --> UI: HTTP 400
+else saldo valido
+  RS -> AR: save(aluno com saldo debitado)
+  RS -> RR: save(ResgateVantagem com codigo unico)
+  RS -> QR: gerarQrCode(codigo, nomeArquivo)
+  RS -> CR: save(Cupom)
+  RS -> NS: enviarConfirmacaoResgateParaAluno(...)
+  RS -> NS: enviarConfirmacaoResgateParaEmpresa(...)
+  RS --> RC: ResgateResponse
+  RC --> UI: HTTP 201
 end
-deactivate VS
-
-RS -> AS: verificarSaldoAluno(alunoId)
-activate AS
-AS -> DB: SELECT saldo FROM aluno WHERE id = alunoId
-AS --> RS: saldoAtual
-deactivate AS
-
-alt Saldo INSUFICIENTE
-  RS --> RC: throws SaldoInsuficienteException
-  RC --> UI: HTTP 400 Bad Request
-  UI --> Aluno: ❌ Saldo insuficiente!\nVocê tem X, precisa de Y
-else Saldo SUFICIENTE
-
-  RS -> CG: gerarCodigoUnico()
-  activate CG
-  note right of CG
-    **Geração de Código:**
-    • Formato: ABC-12345-XYZ
-    • Único no banco
-    • Válido por 30 dias
-    • Rastreável
-  end note
-  CG -> DB: SELECT COUNT(*) FROM resgate WHERE codigo = ?
-  alt Código já existe (retry)
-    CG -> CG: gerarCodigoUnico()
-  end
-  CG --> RS: codigoUnico = "ABC-12345-XYZ"
-  deactivate CG
-
-  RS -> AS: debitarSaldoAluno(alunoId, custoVantagem)
-  activate AS
-  AS -> DB: UPDATE aluno SET saldo = saldo - ? WHERE id = alunoId
-  AS --> RS: novoSaldo
-  deactivate AS
-
-  RS -> RR: salvarResgate(new ResgateVantagem(...))
-  activate RR
-  note right of RR
-    ResgateVantagem {
-      alunoId, vantagemId
-      codigo: "ABC-12345-XYZ"
-      dataCriacao: NOW()
-      dataVencimento: NOW() + 30 dias
-      status: PENDENTE
-      confirmacaoEmpresa: false
-    }
-  end note
-  RR -> DB: INSERT INTO resgate_vantagem
-  RR --> RS: resgateId
-  deactivate RR
-
-  RS -> NS: notificarAluno(alunoId, vantagemId, codigo, custo)
-  activate NS
-  note right of NS
-    **Email ao Aluno:**
-    Assunto: "Código do seu cupom"
-    
-    "Você resgatou: {vantagem.nome}
-     Código: ABC-12345-XYZ
-     Validade: 30 dias
-     Apresente na empresa!"
-  end note
-  NS -> DB: SELECT email FROM aluno WHERE id = alunoId
-  NS -> NS: enviarEmail(aluno.email, template)
-  NS --> RS: emailAlunoEnviado = true
-  deactivate NS
-
-  RS -> NS: notificarEmpresa(vantagemId, codigo, nomeAluno)
-  activate NS
-  note right of NS
-    **Email à Empresa:**
-    Assunto: "Novo resgate de vantagem"
-    
-    "Aluno {aluno.nome} resgatou:
-     Vantagem: {vantagem.nome}
-     Código: ABC-12345-XYZ
-     Aguardando conferência"
-  end note
-  NS -> DB: SELECT email FROM empresa WHERE id = vantagem.empresaId
-  NS -> NS: enviarEmail(empresa.email, template)
-  NS --> RS: emailEmpresaEnviado = true
-  deactivate NS
-
-  RS --> RC: HTTP 201 Created\n{resgateId, codigo, novoSaldo}
-  deactivate RS
-
-  RC --> UI: Resgate realizado com sucesso
-  deactivate RC
-
-  UI --> Aluno: ✅ Resgate confirmado!\n📧 Verifique seu email\nCódigo: ABC-12345-XYZ\n💰 Novo saldo: Y moedas
-
-end
-
-deactivate UI
-
-note over Aluno, DB
-  **Validações & Regras Aplicadas:**
-  ✓ Aluno autenticado e verificado
-  ✓ Vantagem existe e ativa
-  ✓ Saldo suficiente validado
-  ✓ Código único gerado
-  ✓ Saldo debitado atomicamente
-  ✓ Resgate persistido no banco
-  ✓ Email cupom criado para aluno
-  ✓ Email de conferência para empresa
-  ✓ Código válido por 30 dias
-end note
 
 @enduml

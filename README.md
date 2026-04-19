@@ -84,7 +84,7 @@ Contexto de uso: disciplina Laboratório de Desenvolvimento de Software (PUC Min
 - 🏢 **CRUD de Empresa Parceira:** cadastro, listagem, atualização e remoção.
 - 🎁 **Cadastro de Vantagens:** empresa cadastra vantagens com descrição, foto e custo.
 - 💸 **Distribuição de Moedas:** professor envia moedas com validação de saldo e mensagem obrigatória.
-- 📊 **Extrato:** consulta de extrato para professor e aluno com total consolidado do período e saldo atual.
+- 📊 **Extrato:** consulta de extrato para professor e aluno com total consolidado do periodo, saldo atual e historico (recebimentos e resgates no caso do aluno).
 - 🎟️ **Resgate de Vantagem:** débito automático de saldo e geração de código único.
 - 🧾 **Cupom com QR Code:** geração de QR Code por resgate com endpoint interno para validação visual.
 - 📨 **Notificações:** envio de e-mail ao aluno no recebimento de moedas e confirmações no resgate (via SMTP, com fallback seguro).
@@ -184,9 +184,14 @@ Execução via JAR:
 java -jar target/moeda-estudantil-0.0.1-SNAPSHOT.jar
 ```
 
-Deploy sugerido para Release 3:
+Deploy para Release 3:
 - Front-end: Vercel (configurado em `vercel.json` com output em `src/main/resources/static`)
-- Back-end e banco: Render + PostgreSQL
+- Back-end e banco: Render + PostgreSQL (arquivo `render.yaml` e perfil `application-prod.yml`)
+
+Artefatos operacionais:
+- Script de deploy frontend: `scripts/deploy_frontend_vercel.cmd`
+- Script de validacao local: `scripts/validar_release.cmd`
+- Checklist de deploy e evidencias: `docs/release-3/deploy-checklist.md` e `docs/release-3/evidencias-execucao.md`
 
 ---
 
@@ -244,7 +249,7 @@ Testes E2E automatizados adicionados:
 - `scripts/e2e_negative_tests.py`: cenários de erro esperados (saldo insuficiente e distribuição sem mensagem).
 
 Validação final executada em 18/04/2026:
-- `mvn test` -> 4 testes, 0 falhas, 0 erros.
+- `mvn test` -> todos os testes automatizados passaram.
 - E2E positivo -> concluído com sucesso (QR Code retornando HTTP 200).
 - E2E negativo -> concluído com sucesso (HTTP 400 para regras inválidas).
 

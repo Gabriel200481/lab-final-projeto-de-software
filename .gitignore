@@ -1,0 +1,6 @@
+target/
+qrcodes/
+*.log
+.env
+.DS_Store
+.vscode/

@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  sql:
+    init:
+      mode: never
+  h2:
+    console:
+      enabled: false
+
+app:
+  qrcode:
+    basepath: ${APP_QRCODE_BASEPATH:qrcodes/}
+    baseurl: ${APP_QRCODE_BASEURL:https://seu-backend.onrender.com/api/qrcodes/}
+
+server:
+  port: ${PORT:8080}

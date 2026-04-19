@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: moeda-estudantil-api
+    runtime: java
+    plan: free
+    buildCommand: "mvn -DskipTests clean package"
+    startCommand: "java -Dspring.profiles.active=prod -jar target/moeda-estudantil-0.0.1-SNAPSHOT.jar"
+    envVars:
+      - key: JAVA_VERSION
+        value: 25
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        sync: false
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: APP_QRCODE_BASEURL
+        sync: false

@@ -1,98 +1,33 @@
 @startuml sequencia-cadastro-vantagens
 !theme plain
-skinparam Padding 40
-skinparam defaultFontName Manrope
-skinparam defaultFontSize 11
-
-title Sequência: Cadastro de Vantagens pela Empresa Parceira (Lab04S02)
+title Sequencia: Cadastro e listagem de vantagens (implementacao atual)
 
 actor Empresa
-participant "Frontend\n(UI)" as UI
-participant "VantagemController" as VC
-participant "VantagemService" as VS
+participant "Frontend (app.js)" as UI
+participant "EmpresaController" as EC
 participant "EmpresaService" as ES
-participant "FileUploadService" as FUS
+participant "EmpresaParceiraRepository" as ER
 participant "VantagemRepository" as VR
-database "H2 Database" as DB
-participant "FileSystem" as FS
 
-Empresa -> UI: Preenche formulário de Vantagem\n(Nome, Descrição, Custo, Foto)
-activate UI
+Empresa -> UI: Preenche descricao, fotoUrl e custo
+UI -> EC: POST /api/empresas/{id}/vantagens
+EC -> ES: adicionarVantagem(empresaId, request)
+ES -> ER: findById(empresaId)
 
-UI -> UI: Valida campos obrigatórios
-note right of UI
-  **Validações no Frontend:**
-  • Nome não vazio
-  • Descrição não vazio
-  • Custo > 0
-  • Foto selecionada (JPG/PNG)
-  • Tamanho maxímo: 5MB
-end note
-
-UI -> VC: POST /api/empresas/{id}/vantagens\n{nome, descricao, custo, foto}
-activate VC
-VC -> VS: criarVantagem(empresaId, nome, descricao, custo, fotoFile)
-activate VS
-
-VS -> ES: verificarEmpresaExiste(empresaId)
-activate ES
-ES -> DB: SELECT * FROM empresa WHERE id = empresaId
-alt Empresa NÃO existe
-  ES --> VS: throws EmpresaNaoEncontradaException
-  VS --> VC: HTTP 404 Not Found
-  VC --> UI: ❌ Erro: Empresa não encontrada
-else Empresa OK
-  ES --> VS: empresaValida = true
+alt empresa nao encontrada
+  ES --> EC: NotFoundException
+  EC --> UI: HTTP 404
+else empresa valida
+  ES -> VR: save(Vantagem)
+  ES --> EC: VantagemResponse
+  EC --> UI: HTTP 201
 end
-deactivate ES
 
-VS -> FUS: salvarFoto(fotoFile)
-activate FUS
-note right of FUS
-  **Processamento de Arquivo:**
-  • Gera nome único
-  • Cria diretório /uploads
-  • Salva no filesystem
-  • Retorna caminho relativo
-end note
-FUS -> FS: write(arquivo)
-FS --> FUS: caminhoFoto
-deactivate FUS
-FUS --> VS: caminhoFoto = "/uploads/vantagem_12345.jpg"
-
-VS -> VR: salvarVantagem(new Vantagem(...))
-activate VR
-note right of VR
-  Vantagem {
-    empresaId
-    nome, descricao
-    custo (em moedas)
-    caminhoFoto
-    dataCriacao: NOW()
-    ativo: true
-  }
-end note
-VR -> DB: INSERT INTO vantagem
-VR --> VS: vantagemId
-deactivate VR
-
-VS --> VC: HTTP 201 Created\n{vantagemId, nome, custo}
-deactivate VS
-
-VC --> UI: Vantagem cadastrada com sucesso
-deactivate VC
-
-UI --> Empresa: ✅ Vantagem " + nome + " criada!\n👁️ Visível para alunos agora
-
-note over Empresa, DB
-  **Fluxo Validado:**
-  ✓ Empresa autenticada e validada
-  ✓ Todos os campos obrigatórios preenchidos
-  ✓ Foto armazenada no filesystem
-  ✓ Vantagem persistida no banco
-  ✓ Disponível para resgate pelos alunos
-end note
-
-deactivate UI
+Aluno -> UI: Seleciona empresa para consultar vantagens
+UI -> EC: GET /api/empresas/{id}/vantagens
+EC -> ES: listarVantagens(id)
+ES -> VR: findByEmpresaId(id)
+ES --> EC: List<VantagemResponse>
+EC --> UI: HTTP 200
 
 @enduml

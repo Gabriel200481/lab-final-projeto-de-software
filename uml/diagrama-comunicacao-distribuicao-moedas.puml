@@ -1,49 +1,22 @@
-@startuml Diagrama de Comunicação - Distribuição de Moedas
+@startuml diagrama-comunicacao-distribuicao-moedas
+title Diagrama de comunicacao: distribuicao de moedas
 
-title Diagrama de Comunicação: Professor Distribui Moedas
+object "TransacaoController" as TC
+object "TransacaoService" as TS
+object "ProfessorRepository" as PR
+object "AlunoRepository" as AR
+object "TransacaoMoedaRepository" as TR
+object "NotificacaoService" as NS
 
-object ":ProfessorController" as controller
-object ":DistribuicaoMoedasService" as service
-object ":TransacaoRepository" as repo
-object ":EmailService" as email
-object ":Logger" as log
-
-controller --> controller : 1: validarAutenticacao()
-controller --> service : 2: distribuir(100, "Mensagem", cursoId)
-service --> service : 3: validarSaldoProfessor()
-service --> repo : 4: save(novaTransacao)
-repo --> repo : 5: flush()
-service --> log : 6: logDistribuicao()
-service --> email : 7: enviarEmailNotificacao()
-email --> email : 8: construirTemplate()
-service --> email : 9: send()
-email --> email : 10: fallbackIfFailed()
-service --> controller : 11: retornar(sucesso)
-controller --> controller : 12: renderResponse()
-
-note right of controller
-  //Entrada da requisição//
-  POST /api/distribuir
-  {quantidade: 100, mensagem, cursoId}
-end note
-
-note right of service
-  //Lógica de negócio//
-  - Valida saldo >= 100
-  - Cria transação
-  - Envia email
-  - Trata exceções
-end note
-
-note right of repo
-  //Persistência//
-  INSERT INTO TRANSACAO
-  Saldo atualizado com rollback se falhar
-end note
-
-note right of email
-  //Notificação externa//
-  SMTP ou Fallback em arquivo
-end note
+TC -> TS : 1 distribuirMoedas(request)
+TS -> PR : 2 findById(professorId)
+TS -> AR : 3 findById(alunoId)
+TS -> TS : 4 validarDistribuicao(...)
+TS -> PR : 5 save(professor saldo atualizado)
+TS -> AR : 6 save(aluno saldo atualizado)
+TS -> TR : 7 save(transacao)
+TS -> NS : 8 enviarRecebimentoMoedasParaAluno(...)
+TS -> NS : 9 enviarConfirmacaoDistribuicaoParaProfessor(...)
+TS -> TC : 10 TransacaoResponse
 
 @enduml

@@ -6,10 +6,15 @@ import br.com.moedaestudantil.exception.BusinessException;
 import br.com.moedaestudantil.exception.NotFoundException;
 import br.com.moedaestudantil.model.Aluno;
 import br.com.moedaestudantil.model.Professor;
+import br.com.moedaestudantil.model.ResgateVantagem;
 import br.com.moedaestudantil.model.TransacaoMoeda;
 import br.com.moedaestudantil.repository.AlunoRepository;
 import br.com.moedaestudantil.repository.ProfessorRepository;
+import br.com.moedaestudantil.repository.ResgateVantagemRepository;
 import br.com.moedaestudantil.repository.TransacaoMoedaRepository;
+import br.com.moedaestudantil.repository.VantagemRepository;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,15 +27,21 @@ import org.springframework.stereotype.Service;
 public class ExtratoService {
 
     private final TransacaoMoedaRepository transacaoMoedaRepository;
+        private final ResgateVantagemRepository resgateVantagemRepository;
+        private final VantagemRepository vantagemRepository;
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
 
     public ExtratoService(
             TransacaoMoedaRepository transacaoMoedaRepository,
+                        ResgateVantagemRepository resgateVantagemRepository,
+                        VantagemRepository vantagemRepository,
             AlunoRepository alunoRepository,
             ProfessorRepository professorRepository
     ) {
         this.transacaoMoedaRepository = transacaoMoedaRepository;
+                this.resgateVantagemRepository = resgateVantagemRepository;
+                this.vantagemRepository = vantagemRepository;
         this.alunoRepository = alunoRepository;
         this.professorRepository = professorRepository;
     }
@@ -42,6 +53,7 @@ public class ExtratoService {
                 validarPeriodo(dataInicio, dataFim);
 
                 List<TransacaoMoeda> transacoes;
+                List<ResgateVantagem> resgates;
                 if (dataInicio != null) {
                         LocalDateTime inicio = dataInicio.atStartOfDay();
                         LocalDateTime fim = dataFim.plusDays(1).atStartOfDay().minusNanos(1);
@@ -50,13 +62,22 @@ public class ExtratoService {
                                         inicio,
                                         fim
                         );
+                        resgates = resgateVantagemRepository.findByAlunoIdAndDataHoraBetweenOrderByDataHoraDesc(
+                                aluno.getId(),
+                                inicio,
+                                fim
+                        );
                 } else {
                         transacoes = transacaoMoedaRepository.findByDestinatarioIdOrderByDataHoraDesc(aluno.getId());
+                        resgates = resgateVantagemRepository.findByAlunoIdOrderByDataHoraDesc(aluno.getId());
                 }
 
-                return transacoes.stream()
-                .map(this::toResponse)
-                .toList();
+                List<TransacaoResponse> historico = new ArrayList<>();
+                historico.addAll(transacoes.stream().map(this::toResponse).toList());
+                historico.addAll(resgates.stream().map(r -> toResponseResgate(aluno, r)).toList());
+                historico.sort(Comparator.comparing(TransacaoResponse::dataHora).reversed());
+
+                return historico;
     }
 
     public ExtratoResumoResponse extratoAlunoComResumo(UUID alunoId, LocalDate dataInicio, LocalDate dataFim) {
@@ -146,6 +167,23 @@ public class ExtratoService {
                 t.getValor(),
                 t.getMensagem(),
                 t.getDataHora()
+        );
+    }
+
+    private TransacaoResponse toResponseResgate(Aluno aluno, ResgateVantagem resgate) {
+        var vantagemOpt = vantagemRepository.findById(resgate.getVantagemId());
+        BigDecimal valorDebitado = vantagemOpt.map(v -> v.getCustoMoedas()).orElse(BigDecimal.ZERO);
+        String mensagem = vantagemOpt.map(v -> "Resgate de vantagem: " + v.getDescricao()).orElse("Resgate de vantagem");
+
+        return new TransacaoResponse(
+                resgate.getId(),
+                aluno.getId(),
+                aluno.getNome(),
+                aluno.getId(),
+                aluno.getNome(),
+                valorDebitado.negate(),
+                mensagem + " (codigo " + resgate.getCodigoUnico() + ")",
+                resgate.getDataHora()
         );
     }
 }

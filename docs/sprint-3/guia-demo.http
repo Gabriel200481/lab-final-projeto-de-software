@@ -1,0 +1,43 @@
+### Login professor
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "professor.seed@lab03.com",
+  "senha": "123456"
+}
+
+### Login aluno
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "gabrielvieira200481@gmail.com",
+  "senha": "123456"
+}
+
+### Distribuicao de moedas
+POST http://localhost:8080/api/transacoes/distribuicao
+Content-Type: application/json
+Authorization: Bearer {{TOKEN_PROFESSOR}}
+
+{
+  "professorId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "alunoId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "valor": 50,
+  "mensagem": "Reconhecimento por participacao"
+}
+
+### Extrato resumo aluno
+GET http://localhost:8080/api/extratos/alunos/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb/resumo
+Authorization: Bearer {{TOKEN_ALUNO}}
+
+### Resgate de vantagem
+POST http://localhost:8080/api/resgates
+Content-Type: application/json
+Authorization: Bearer {{TOKEN_ALUNO}}
+
+{
+  "alunoId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+  "vantagemId": "dddddddd-dddd-dddd-dddd-dddddddddddd"
+}
