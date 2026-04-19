@@ -8,7 +8,11 @@ const state = {
   vantagensPorEmpresa: new Map(),
 };
 
-const API_BASE_URL = window.API_BASE_URL || localStorage.getItem("apiBaseUrl") || "";
+const DEFAULT_RENDER_API = "https://lab-final-projeto-de-software.onrender.com";
+const API_BASE_URL =
+  window.API_BASE_URL ||
+  localStorage.getItem("apiBaseUrl") ||
+  (window.location.hostname.includes("vercel.app") ? DEFAULT_RENDER_API : "");
 
 const el = {
   loginForm: document.getElementById("loginForm"),
