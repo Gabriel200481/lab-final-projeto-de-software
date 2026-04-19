@@ -28,7 +28,7 @@
 
 [![Versão](https://img.shields.io/badge/Versão-v1.0.0-blue)](#)
 [![CI](https://github.com/Gabriel200481/Lab_03_projeto/actions/workflows/ci.yml/badge.svg)](https://github.com/Gabriel200481/Lab_03_projeto/actions/workflows/ci.yml)
-![Java](https://img.shields.io/badge/Java-25-007ec6?style=for-the-badge&logo=openjdk&logoColor=white)
+![Java](https://img.shields.io/badge/Java-22-007ec6?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.13-007ec6?style=for-the-badge&logo=springboot&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-3.9+-007ec6?style=for-the-badge&logo=apachemaven&logoColor=white)
 ![H2](https://img.shields.io/badge/H2-Database-007ec6?style=for-the-badge)
@@ -96,7 +96,7 @@ Contexto de uso: disciplina Laboratório de Desenvolvimento de Software (PUC Min
 ## 🛠 Tecnologias Utilizadas
 
 ### 🖥️ Back-end
-* **Linguagem/Runtime:** Java 25
+* **Linguagem/Runtime:** Java 22
 * **Framework:** Spring Boot 3.5.13
 * **Banco de Dados:** H2 (memória)
 * **ORM:** Spring Data JPA / Hibernate
@@ -132,7 +132,7 @@ Arquitetura MVC com separação clara:
 ## 🔧 Instalação e Execução
 
 ### Pré-requisitos
-* Java JDK 25+
+* Java JDK 22+
 * Maven 3.9+
 
 ### 🔑 Variáveis de Ambiente

@@ -18,7 +18,7 @@
     <description>Sistema de Moeda Estudantil</description>
 
     <properties>
-        <java.version>25</java.version>
+        <java.version>22</java.version>
         <byte-buddy.version>1.18.8</byte-buddy.version>
     </properties>
 
