@@ -9,6 +9,7 @@ import br.com.moedaestudantil.model.InstituicaoEnsino;
 import br.com.moedaestudantil.model.PapelUsuario;
 import br.com.moedaestudantil.repository.AlunoRepository;
 import br.com.moedaestudantil.repository.InstituicaoEnsinoRepository;
+import br.com.moedaestudantil.security.CurrentUserService;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -22,15 +23,18 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final InstituicaoEnsinoRepository instituicaoEnsinoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CurrentUserService currentUserService;
 
     public AlunoService(
             AlunoRepository alunoRepository,
             InstituicaoEnsinoRepository instituicaoEnsinoRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            CurrentUserService currentUserService
     ) {
         this.alunoRepository = alunoRepository;
         this.instituicaoEnsinoRepository = instituicaoEnsinoRepository;
         this.passwordEncoder = passwordEncoder;
+        this.currentUserService = currentUserService;
     }
 
     public AlunoResponse criar(AlunoRequest request) {
@@ -50,6 +54,7 @@ public class AlunoService {
 
     public AlunoResponse buscarPorId(UUID id) {
         UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAoAluno(safeId);
         Aluno aluno = alunoRepository.findById(safeId)
                 .orElseThrow(() -> new NotFoundException("Aluno nao encontrado"));
         return paraResponse(aluno);
@@ -57,6 +62,7 @@ public class AlunoService {
 
     public AlunoResponse atualizar(UUID id, AlunoRequest request) {
         UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAoAluno(safeId);
         Aluno aluno = alunoRepository.findById(safeId)
                 .orElseThrow(() -> new NotFoundException("Aluno nao encontrado"));
 
@@ -69,10 +75,18 @@ public class AlunoService {
 
     public void excluir(UUID id) {
         UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAoAluno(safeId);
         if (!alunoRepository.existsById(safeId)) {
             throw new NotFoundException("Aluno nao encontrado");
         }
         alunoRepository.deleteById(safeId);
+    }
+
+    private void validarAcessoAoAluno(UUID alunoId) {
+        Aluno alunoAutenticado = currentUserService.getAuthenticatedAluno();
+        if (!alunoAutenticado.getId().equals(alunoId)) {
+            throw new BusinessException("Aluno autenticado nao pode acessar outro aluno");
+        }
     }
 
     private InstituicaoEnsino buscarInstituicao(UUID instituicaoId) {

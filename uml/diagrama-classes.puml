@@ -68,16 +68,22 @@ class ResgateVantagem {
 class Cupom {
   +id: Long
   +codigo: String
+  +usuario: Usuario
+  +vantagem: Vantagem
   +qrcodeUrl: String
   +dataGeracao: LocalDateTime
   +dataResgate: LocalDateTime
   +utilizado: Boolean
+  +dataAtualizacao: LocalDateTime
+  +observacoes: String
+  +marcarComoUtilizado()
+  +expirou(diasValidade: int): boolean
 }
 
-class RegraSemestralSaldo {
-  +id: UUID
-  +valorRecarga: BigDecimal = 1000
-  +aplicarRecarga(professor: Professor)
+class SaldoSemestralService <<service>> {
+  +RECARGA_SEMESTRAL: BigDecimal = 1000
+  +aplicarRecargaParaTodos()
+  +aplicarRecargaParaProfessor(professorId: UUID)
 }
 
 Usuario <|-- Aluno
@@ -93,10 +99,10 @@ TransacaoMoeda "*" --> "1" Aluno : destinatarioId
 EmpresaParceira "1" --> "*" Vantagem : oferece
 ResgateVantagem "*" --> "1" Aluno : alunoId
 ResgateVantagem "*" --> "1" Vantagem : vantagemId
-Cupom "*" --> "1" Aluno : usuario
+Cupom "*" --> "1" Usuario : usuario
 Cupom "*" --> "1" Vantagem : vantagem
 
-RegraSemestralSaldo "1" --> "*" Professor : aplica em
+SaldoSemestralService ..> Professor : atualiza saldo
 
 note bottom of TransacaoMoeda
 Registro obrigatorio de:
@@ -106,9 +112,15 @@ Registro obrigatorio de:
 - mensagem
 end note
 
-note bottom of RegraSemestralSaldo
+note bottom of SaldoSemestralService
 A cada semestre:
 novo saldo = saldo atual + 1000
+end note
+
+note bottom of Cupom
+Cupom inclui URL de QR Code,
+status de uso e metadados
+de validacao/resgate
 end note
 
 @enduml

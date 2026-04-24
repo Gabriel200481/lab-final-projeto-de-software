@@ -8,6 +8,7 @@ import br.com.moedaestudantil.model.Aluno;
 import br.com.moedaestudantil.model.Professor;
 import br.com.moedaestudantil.model.ResgateVantagem;
 import br.com.moedaestudantil.model.TransacaoMoeda;
+import br.com.moedaestudantil.security.CurrentUserService;
 import br.com.moedaestudantil.repository.AlunoRepository;
 import br.com.moedaestudantil.repository.ProfessorRepository;
 import br.com.moedaestudantil.repository.ResgateVantagemRepository;
@@ -31,22 +32,30 @@ public class ExtratoService {
         private final VantagemRepository vantagemRepository;
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
+        private final CurrentUserService currentUserService;
 
     public ExtratoService(
             TransacaoMoedaRepository transacaoMoedaRepository,
                         ResgateVantagemRepository resgateVantagemRepository,
                         VantagemRepository vantagemRepository,
             AlunoRepository alunoRepository,
-            ProfessorRepository professorRepository
+                        ProfessorRepository professorRepository,
+                        CurrentUserService currentUserService
     ) {
         this.transacaoMoedaRepository = transacaoMoedaRepository;
                 this.resgateVantagemRepository = resgateVantagemRepository;
                 this.vantagemRepository = vantagemRepository;
         this.alunoRepository = alunoRepository;
         this.professorRepository = professorRepository;
+                this.currentUserService = currentUserService;
     }
 
         public List<TransacaoResponse> extratoAluno(UUID alunoId, LocalDate dataInicio, LocalDate dataFim) {
+                Aluno alunoAutenticado = currentUserService.getAuthenticatedAluno();
+                if (!alunoAutenticado.getId().equals(alunoId)) {
+                        throw new BusinessException("Aluno autenticado nao pode consultar extrato de outro aluno");
+                }
+
         Aluno aluno = alunoRepository.findById(alunoId)
                 .orElseThrow(() -> new NotFoundException("Aluno nao encontrado"));
 
@@ -99,6 +108,11 @@ public class ExtratoService {
     }
 
         public List<TransacaoResponse> extratoProfessor(UUID professorId, LocalDate dataInicio, LocalDate dataFim) {
+                Professor professorAutenticado = currentUserService.getAuthenticatedProfessor();
+                if (!professorAutenticado.getId().equals(professorId)) {
+                        throw new BusinessException("Professor autenticado nao pode consultar extrato de outro professor");
+                }
+
         Professor professor = professorRepository.findById(professorId)
                 .orElseThrow(() -> new NotFoundException("Professor nao encontrado"));
 

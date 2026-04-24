@@ -11,6 +11,7 @@ import br.com.moedaestudantil.model.PapelUsuario;
 import br.com.moedaestudantil.model.Vantagem;
 import br.com.moedaestudantil.repository.EmpresaParceiraRepository;
 import br.com.moedaestudantil.repository.VantagemRepository;
+import br.com.moedaestudantil.security.CurrentUserService;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -24,15 +25,18 @@ public class EmpresaService {
     private final EmpresaParceiraRepository empresaParceiraRepository;
     private final VantagemRepository vantagemRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CurrentUserService currentUserService;
 
     public EmpresaService(
             EmpresaParceiraRepository empresaParceiraRepository,
             VantagemRepository vantagemRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            CurrentUserService currentUserService
     ) {
         this.empresaParceiraRepository = empresaParceiraRepository;
         this.vantagemRepository = vantagemRepository;
         this.passwordEncoder = passwordEncoder;
+        this.currentUserService = currentUserService;
     }
 
     public EmpresaResponse criar(EmpresaRequest request) {
@@ -55,6 +59,7 @@ public class EmpresaService {
 
     public EmpresaResponse atualizar(UUID id, EmpresaRequest request) {
         UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAEmpresa(safeId);
         EmpresaParceira empresa = buscarEmpresa(safeId);
         validarEmailDuplicado(request.email(), safeId);
         preencherEmpresa(empresa, request);
@@ -64,6 +69,7 @@ public class EmpresaService {
 
     public void excluir(UUID id) {
         UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAEmpresa(safeId);
         if (!empresaParceiraRepository.existsById(safeId)) {
             throw new NotFoundException("Empresa nao encontrada");
         }
@@ -71,6 +77,7 @@ public class EmpresaService {
     }
 
     public VantagemResponse adicionarVantagem(UUID empresaId, VantagemRequest request) {
+        validarAcessoAEmpresa(empresaId);
         EmpresaParceira empresa = buscarEmpresa(empresaId);
         Vantagem vantagem = new Vantagem();
         vantagem.setDescricao(request.descricao());
@@ -94,6 +101,13 @@ public class EmpresaService {
         return vantagemRepository.findByEmpresaId(empresaId).stream()
                 .map(v -> new VantagemResponse(v.getId(), v.getDescricao(), v.getFotoUrl(), v.getCustoMoedas(), v.isAtiva()))
                 .toList();
+    }
+
+    private void validarAcessoAEmpresa(UUID empresaId) {
+        EmpresaParceira empresaAutenticada = currentUserService.getAuthenticatedEmpresa();
+        if (!empresaAutenticada.getId().equals(Objects.requireNonNull(empresaId))) {
+            throw new BusinessException("Empresa autenticada nao pode acessar outra empresa");
+        }
     }
 
     private EmpresaParceira buscarEmpresa(UUID id) {

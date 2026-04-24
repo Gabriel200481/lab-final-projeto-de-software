@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Aluno</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 2rem; background: #f6fafc; color: #1c2733; }
+    form, table { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+    input, select, button { margin: .35rem 0; padding: .6rem; width: 100%; }
+    button { background: #0f6bd6; color: #fff; border: 0; border-radius: 8px; cursor: pointer; }
+    th, td { padding: .5rem; border-bottom: 1px solid #ddd; text-align: left; }
+    table { width: 100%; margin-top: 1rem; border-collapse: collapse; }
+  </style>
+</head>
+<body>
+  <h1>Cadastro de Aluno</h1>
+
+  <form id="alunoForm">
+    <input id="nome" placeholder="Nome" required>
+    <input id="email" type="email" placeholder="Email" required>
+    <input id="senha" type="password" placeholder="Senha" required>
+    <input id="cpf" placeholder="CPF (11 digitos)" required>
+    <input id="rg" placeholder="RG" required>
+    <input id="endereco" placeholder="Endereco" required>
+    <input id="curso" placeholder="Curso" required>
+    <select id="instituicao" required></select>
+    <button type="submit">Cadastrar Aluno</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr><th>Nome</th><th>Email</th><th>CPF</th><th>Instituicao</th><th>Curso</th></tr>
+    </thead>
+    <tbody id="alunosBody"></tbody>
+  </table>
+
+  <script>
+    async function carregarInstituicoes() {
+      const response = await fetch('/api/instituicoes');
+      const instituicoes = await response.json();
+      const select = document.getElementById('instituicao');
+      select.innerHTML = '';
+      instituicoes.forEach(i => {
+        const option = document.createElement('option');
+        option.value = i.id;
+        option.textContent = `${i.sigla} - ${i.nome}`;
+        select.appendChild(option);
+      });
+    }
+
+    async function carregarAlunos() {
+      const response = await fetch('/api/alunos');
+      const alunos = await response.json();
+      const body = document.getElementById('alunosBody');
+      body.innerHTML = '';
+      alunos.forEach(a => {
+        body.innerHTML += `<tr><td>${a.nome}</td><td>${a.email}</td><td>${a.cpf}</td><td>${a.instituicaoSigla}</td><td>${a.curso}</td></tr>`;
+      });
+    }
+
+    document.getElementById('alunoForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const payload = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        senha: document.getElementById('senha').value,
+        cpf: document.getElementById('cpf').value,
+        rg: document.getElementById('rg').value,
+        endereco: document.getElementById('endereco').value,
+        curso: document.getElementById('curso').value,
+        instituicaoId: document.getElementById('instituicao').value
+      };
+
+      const response = await fetch('/api/alunos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        alert(error.error || 'Falha ao cadastrar aluno');
+        return;
+      }
+
+      event.target.reset();
+      await carregarInstituicoes();
+      await carregarAlunos();
+    });
+
+    carregarInstituicoes().then(carregarAlunos);
+  </script>
+</body>
+</html>

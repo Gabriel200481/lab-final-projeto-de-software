@@ -8,6 +8,7 @@ import br.com.moedaestudantil.model.Aluno;
 import br.com.moedaestudantil.model.Cupom;
 import br.com.moedaestudantil.model.ResgateVantagem;
 import br.com.moedaestudantil.model.Vantagem;
+import br.com.moedaestudantil.security.CurrentUserService;
 import br.com.moedaestudantil.repository.AlunoRepository;
 import br.com.moedaestudantil.repository.CupomRepository;
 import br.com.moedaestudantil.repository.ResgateVantagemRepository;
@@ -28,6 +29,7 @@ public class ResgateService {
     private final CupomRepository cupomRepository;
     private final NotificacaoService notificacaoService;
     private final QrCodeService qrCodeService;
+    private final CurrentUserService currentUserService;
 
     public ResgateService(
             AlunoRepository alunoRepository,
@@ -35,7 +37,8 @@ public class ResgateService {
             ResgateVantagemRepository resgateVantagemRepository,
             CupomRepository cupomRepository,
             NotificacaoService notificacaoService,
-            QrCodeService qrCodeService
+            QrCodeService qrCodeService,
+            CurrentUserService currentUserService
     ) {
         this.alunoRepository = alunoRepository;
         this.vantagemRepository = vantagemRepository;
@@ -43,10 +46,16 @@ public class ResgateService {
         this.cupomRepository = cupomRepository;
         this.notificacaoService = notificacaoService;
         this.qrCodeService = qrCodeService;
+        this.currentUserService = currentUserService;
     }
 
     @Transactional
     public ResgateResponse resgatar(ResgateRequest request) {
+        Aluno alunoAutenticado = currentUserService.getAuthenticatedAluno();
+        if (!alunoAutenticado.getId().equals(request.alunoId())) {
+            throw new BusinessException("Aluno autenticado nao pode resgatar vantagem em nome de outro aluno");
+        }
+
         Aluno aluno = alunoRepository.findById(request.alunoId())
                 .orElseThrow(() -> new NotFoundException("Aluno nao encontrado"));
 
@@ -96,8 +105,13 @@ public class ResgateService {
     }
 
     public ResgateResponse buscarPorId(UUID id) {
+        Aluno alunoAutenticado = currentUserService.getAuthenticatedAluno();
         ResgateVantagem resgate = resgateVantagemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Resgate nao encontrado"));
+
+        if (!resgate.getAlunoId().equals(alunoAutenticado.getId())) {
+            throw new BusinessException("Aluno autenticado nao pode consultar resgate de outro aluno");
+        }
 
         Vantagem vantagem = vantagemRepository.findById(resgate.getVantagemId())
                 .orElseThrow(() -> new NotFoundException("Vantagem nao encontrada"));

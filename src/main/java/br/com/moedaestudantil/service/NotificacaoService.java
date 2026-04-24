@@ -20,6 +20,7 @@ public class NotificacaoService {
     private final JavaMailSender mailSender;
     private final String remetente;
     private final String destinoAlunoPadrao;
+    private final String destinoProfessorPadrao;
     private final String destinoEmpresaPadrao;
     private final boolean falharSeNaoEnviar;
 
@@ -27,12 +28,14 @@ public class NotificacaoService {
             JavaMailSender mailSender,
             @Value("${spring.mail.username}") String remetente,
             @Value("${app.mail.destino-aluno-padrao:gabrielvieira200481@gmail.com}") String destinoAlunoPadrao,
+            @Value("${app.mail.destino-professor-padrao:}") String destinoProfessorPadrao,
             @Value("${app.mail.destino-empresa-padrao:thalescarvalho622@gmail.com}") String destinoEmpresaPadrao,
             @Value("${app.mail.fail-on-error:false}") boolean falharSeNaoEnviar
     ) {
         this.mailSender = mailSender;
         this.remetente = remetente;
         this.destinoAlunoPadrao = destinoAlunoPadrao;
+        this.destinoProfessorPadrao = destinoProfessorPadrao;
         this.destinoEmpresaPadrao = destinoEmpresaPadrao;
         this.falharSeNaoEnviar = falharSeNaoEnviar;
     }
@@ -61,7 +64,7 @@ public class NotificacaoService {
     }
 
     public void enviarConfirmacaoDistribuicaoParaProfessor(Professor professor, Aluno aluno, BigDecimal valor, String mensagemTransacao) {
-        String destino = (professor.getEmail() == null || professor.getEmail().isBlank()) ? destinoEmpresaPadrao : professor.getEmail();
+        String destino = resolveDestino(professor.getEmail(), destinoProfessorPadrao);
         SimpleMailMessage mensagem = new SimpleMailMessage();
         mensagem.setFrom(remetente);
         mensagem.setTo(destino);
@@ -94,5 +97,12 @@ public class NotificacaoService {
                 throw ex;
             }
         }
+    }
+
+    private String resolveDestino(String email, String destinoPadrao) {
+        if (email != null && !email.isBlank()) {
+            return email;
+        }
+        return destinoPadrao;
     }
 }

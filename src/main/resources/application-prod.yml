@@ -2,6 +2,8 @@ spring:
   datasource:
     url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
+  mail:
+    password: ${MAIL_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,10 +17,14 @@ spring:
 
 app:
   cors:
-    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:*}
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS}
   qrcode:
     basepath: ${APP_QRCODE_BASEPATH:qrcodes/}
     baseurl: ${APP_QRCODE_BASEURL:https://seu-backend.onrender.com/api/qrcodes/}
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
 
 server:
   port: ${PORT:8080}

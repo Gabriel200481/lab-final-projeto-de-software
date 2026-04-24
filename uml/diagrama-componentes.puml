@@ -7,6 +7,8 @@ package "View (Front-end)" {
   [Web UI Empresa]
 }
 
+[Operacao/DevOps] as OPS
+
 package "Controller (Aplicacao)" {
   [AuthController]
   [AlunoController]
@@ -17,6 +19,9 @@ package "Controller (Aplicacao)" {
   [TransacaoController]
   [ResgateController]
   [SaldoSemestralController]
+  [QrCodeController]
+  [HealthController]
+  [BacklogController]
 }
 
 package "Service (Regra de Negocio)" {
@@ -29,13 +34,26 @@ package "Service (Regra de Negocio)" {
   [TransacaoService]
   [ResgateService]
   [NotificacaoService]
+  [QrCodeService]
   [SaldoSemestralService]
+}
+
+package "Seguranca" {
+  [SecurityConfig]
+  [JwtAuthenticationFilter]
+  [JwtService]
+  [CurrentUserService]
 }
 
 package "Model/Persistencia" {
   [Entidades JPA]
   [Repositorios]
   database "Banco de Dados" as DB
+}
+
+package "Infra" {
+  [JavaMailSender]
+  [Arquivo QR Code em Disco]
 }
 
 [Web UI Aluno] --> [AuthController]
@@ -50,6 +68,10 @@ package "Model/Persistencia" {
 [Web UI Professor] --> [SaldoSemestralController]
 
 [Web UI Empresa] --> [EmpresaController]
+[Web UI Aluno] --> [QrCodeController]
+
+OPS --> [HealthController]
+OPS --> [BacklogController]
 
 [AuthController] --> [AuthService]
 [AlunoController] --> [AlunoService]
@@ -60,6 +82,7 @@ package "Model/Persistencia" {
 [TransacaoController] --> [TransacaoService]
 [ResgateController] --> [ResgateService]
 [SaldoSemestralController] --> [SaldoSemestralService]
+[QrCodeController] --> [Arquivo QR Code em Disco]
 
 [TransacaoService] --> [Repositorios]
 [ExtratoService] --> [Repositorios]
@@ -67,9 +90,23 @@ package "Model/Persistencia" {
 [EmpresaService] --> [Repositorios]
 [ProfessorService] --> [Repositorios]
 [InstituicaoService] --> [Repositorios]
+[AuthService] --> [Repositorios]
 
 [ResgateService] --> [NotificacaoService]
+[ResgateService] --> [QrCodeService]
 [SaldoSemestralService] --> [Repositorios]
+[NotificacaoService] --> [JavaMailSender]
+[QrCodeService] --> [Arquivo QR Code em Disco]
+
+[SecurityConfig] --> [JwtAuthenticationFilter]
+[JwtAuthenticationFilter] --> [JwtService]
+[AuthService] --> [JwtService]
+[AlunoService] --> [CurrentUserService]
+[ProfessorService] --> [CurrentUserService]
+[EmpresaService] --> [CurrentUserService]
+[TransacaoService] --> [CurrentUserService]
+[ExtratoService] --> [CurrentUserService]
+[ResgateService] --> [CurrentUserService]
 
 [Repositorios] --> [Entidades JPA]
 [Repositorios] --> DB
@@ -81,8 +118,15 @@ end note
 
 note right of [ResgateService]
 Gera codigo unico
+Gera cupom com QR Code
 Dispara e-mails de confirmacao
 Debita saldo automaticamente
+end note
+
+note right of [SecurityConfig]
+Regras de autorizacao por perfil:
+ALUNO, PROFESSOR e EMPRESA
+com JWT stateless
 end note
 
 @enduml

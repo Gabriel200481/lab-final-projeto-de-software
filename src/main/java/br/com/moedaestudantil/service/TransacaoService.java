@@ -7,6 +7,7 @@ import br.com.moedaestudantil.exception.NotFoundException;
 import br.com.moedaestudantil.model.Aluno;
 import br.com.moedaestudantil.model.Professor;
 import br.com.moedaestudantil.model.TransacaoMoeda;
+import br.com.moedaestudantil.security.CurrentUserService;
 import br.com.moedaestudantil.repository.AlunoRepository;
 import br.com.moedaestudantil.repository.ProfessorRepository;
 import br.com.moedaestudantil.repository.TransacaoMoedaRepository;
@@ -23,21 +24,29 @@ public class TransacaoService {
     private final AlunoRepository alunoRepository;
     private final TransacaoMoedaRepository transacaoMoedaRepository;
     private final NotificacaoService notificacaoService;
+    private final CurrentUserService currentUserService;
 
     public TransacaoService(
             ProfessorRepository professorRepository,
             AlunoRepository alunoRepository,
             TransacaoMoedaRepository transacaoMoedaRepository,
-            NotificacaoService notificacaoService
+            NotificacaoService notificacaoService,
+            CurrentUserService currentUserService
     ) {
         this.professorRepository = professorRepository;
         this.alunoRepository = alunoRepository;
         this.transacaoMoedaRepository = transacaoMoedaRepository;
         this.notificacaoService = notificacaoService;
+        this.currentUserService = currentUserService;
     }
 
     @Transactional
     public TransacaoResponse distribuirMoedas(DistribuicaoMoedaRequest request) {
+        Professor professorAutenticado = currentUserService.getAuthenticatedProfessor();
+        if (!professorAutenticado.getId().equals(request.professorId())) {
+            throw new BusinessException("Professor autenticado nao pode distribuir moedas em nome de outro professor");
+        }
+
         Professor professor = professorRepository.findById(request.professorId())
                 .orElseThrow(() -> new NotFoundException("Professor nao encontrado"));
 

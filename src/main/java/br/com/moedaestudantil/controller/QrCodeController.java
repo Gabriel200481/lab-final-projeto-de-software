@@ -24,7 +24,11 @@ public class QrCodeController {
     @GetMapping("/{fileName:.+}")
     public ResponseEntity<Resource> getQrCode(@PathVariable String fileName) {
         try {
-            Path file = Paths.get(qrcodePath).resolve(fileName).normalize();
+            Path baseDir = Paths.get(qrcodePath).toAbsolutePath().normalize();
+            Path file = baseDir.resolve(fileName).normalize();
+            if (!file.startsWith(baseDir)) {
+                return ResponseEntity.notFound().build();
+            }
             if (!Files.exists(file) || !Files.isReadable(file)) {
                 return ResponseEntity.notFound().build();
             }

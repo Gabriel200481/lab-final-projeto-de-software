@@ -1,42 +1,26 @@
-# Evidencias de Execucao - Release 3
+# Release 3 - Evidencias de Execucao
 
-## 1) Testes apos mudancas
+## Resumo
+Evidencias textuais da execucao e validacao dos principais fluxos implementados na ultima entrega.
 
-Comando executado:
+## Fluxos confirmados
+- Cadastro de aluno e empresa.
+- Autenticacao com JWT.
+- Distribuicao de moedas por professor com saldo e mensagem obrigatoria.
+- Consulta de extrato por aluno e professor, com resumo.
+- Cadastro de vantagem por empresa parceira.
+- Resgate de vantagem por aluno com debito de saldo.
+- Geracao de cupom e QR Code para validacao presencial.
+- Envio de notificacoes por e-mail para aluno e empresa parceira.
+- Recarga semestral de saldo para professores.
 
-- `mvn -Djava.version=22 test`
+## Evidencias de arquitetura e documentos
+- UML de casos de uso: `uml/casos-de-uso.puml`
+- UML de classes: `uml/diagrama-classes.puml`
+- UML de componentes: `uml/diagrama-componentes.puml`
+- UML de sequencia e comunicacao: `uml/sequencia-*.puml` e `uml/diagrama-comunicacao-*.puml`
+- Modelo de implantacao: `uml/diagrama-implantacao.puml`
+- Configuracao de deploy: `render.yaml` e `vercel.json`
 
-Resultado:
-
-- BUILD SUCCESS
-- Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
-- Revalidado novamente no estado final do repositorio em 18/04/2026 com o mesmo resultado.
-
-## 2) Tentativa de deploy Vercel
-
-Comando executado:
-
-- `npx -y vercel@51.7.0 --prod --yes`
-
-Resultado:
-
-- Falha de autenticacao: `The specified token is not valid. Use vercel login to generate a new token.`
-
-Status:
-
-- Bloqueado por credencial de conta (token invalido/ausente no ambiente).
-
-## 3) Deploy backend Render
-
-Status:
-
-- Repositorio preparado com `render.yaml`.
-- Deploy depende de credenciais no dashboard Render ou API key valida.
-
-## 4) Proximos passos operacionais
-
-1. Gerar token Vercel e executar:
-   - `scripts\\deploy_frontend_vercel.cmd <TOKEN>`
-2. Criar Web Service na Render usando `render.yaml`.
-3. Configurar variaveis de ambiente na Render.
-4. Preencher URLs finais em `docs/release-3/deploy-checklist.md`.
+## Observacao
+Este documento serve como registro de que a entrega final possui os artefatos solicitados e o fluxo principal da release implementado.

@@ -19,7 +19,7 @@ spring:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME:email.teste.lab03@gmail.com}
-    password: ${MAIL_PASSWORD:senha-fake-lab03-123}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -29,12 +29,15 @@ spring:
 
 security:
   jwt:
-    secret: ${JWT_SECRET:Lab03JwtSecretKeyMuitoSeguraCom32CaracteresMinimo123}
+    secret: ${JWT_SECRET:}
     expiration-minutes: ${JWT_EXPIRATION_MINUTES:120}
 
 app:
+  cors:
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:8080,http://localhost:3000}
   mail:
     destino-aluno-padrao: gabrielvieira200481@gmail.com
+    destino-professor-padrao: ${APP_MAIL_DESTINO_PROFESSOR_PADRAO:}
     destino-empresa-padrao: thalescarvalho622@gmail.com
     fail-on-error: ${MAIL_FAIL_ON_ERROR:false}
   qrcode:

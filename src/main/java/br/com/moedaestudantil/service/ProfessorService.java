@@ -5,10 +5,10 @@ import br.com.moedaestudantil.dto.ProfessorResponse;
 import br.com.moedaestudantil.exception.BusinessException;
 import br.com.moedaestudantil.exception.NotFoundException;
 import br.com.moedaestudantil.model.InstituicaoEnsino;
-import br.com.moedaestudantil.model.PapelUsuario;
 import br.com.moedaestudantil.model.Professor;
 import br.com.moedaestudantil.repository.InstituicaoEnsinoRepository;
 import br.com.moedaestudantil.repository.ProfessorRepository;
+import br.com.moedaestudantil.security.CurrentUserService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -20,46 +20,39 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings("null")
 public class ProfessorService {
 
-    private static final BigDecimal SALDO_INICIAL = BigDecimal.valueOf(1000);
-
     private final ProfessorRepository professorRepository;
     private final InstituicaoEnsinoRepository instituicaoEnsinoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CurrentUserService currentUserService;
 
     public ProfessorService(
             ProfessorRepository professorRepository,
             InstituicaoEnsinoRepository instituicaoEnsinoRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            CurrentUserService currentUserService
     ) {
         this.professorRepository = professorRepository;
         this.instituicaoEnsinoRepository = instituicaoEnsinoRepository;
         this.passwordEncoder = passwordEncoder;
+        this.currentUserService = currentUserService;
     }
 
-    public ProfessorResponse criar(ProfessorRequest request) {
-        validarDuplicidade(request.cpf(), request.email(), null);
-        InstituicaoEnsino instituicao = buscarInstituicao(request.instituicaoId());
-
-        Professor professor = new Professor();
-        preencherProfessor(professor, request, instituicao);
-        professor.setPapel(PapelUsuario.PROFESSOR);
-        professor.setSaldoAtual(SALDO_INICIAL);
-        Professor salvo = Objects.requireNonNull(professorRepository.save(professor));
-        return paraResponse(salvo);
-    }
 
     public List<ProfessorResponse> listar() {
         return professorRepository.findAll().stream().map(this::paraResponse).toList();
     }
 
     public ProfessorResponse buscarPorId(UUID id) {
-        Professor professor = professorRepository.findById(Objects.requireNonNull(id))
+        UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAoProfessor(safeId);
+        Professor professor = professorRepository.findById(safeId)
                 .orElseThrow(() -> new NotFoundException("Professor nao encontrado"));
         return paraResponse(professor);
     }
 
     public ProfessorResponse atualizar(UUID id, ProfessorRequest request) {
         UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAoProfessor(safeId);
         Professor professor = professorRepository.findById(safeId)
                 .orElseThrow(() -> new NotFoundException("Professor nao encontrado"));
 
@@ -75,10 +68,18 @@ public class ProfessorService {
 
     public void excluir(UUID id) {
         UUID safeId = Objects.requireNonNull(id);
+        validarAcessoAoProfessor(safeId);
         if (!professorRepository.existsById(safeId)) {
             throw new NotFoundException("Professor nao encontrado");
         }
         professorRepository.deleteById(safeId);
+    }
+
+    private void validarAcessoAoProfessor(UUID professorId) {
+        Professor professorAutenticado = currentUserService.getAuthenticatedProfessor();
+        if (!professorAutenticado.getId().equals(professorId)) {
+            throw new BusinessException("Professor autenticado nao pode acessar outro professor");
+        }
     }
 
     private InstituicaoEnsino buscarInstituicao(UUID instituicaoId) {
