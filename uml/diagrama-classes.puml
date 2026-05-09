@@ -1,13 +1,15 @@
 @startuml diagrama-classes
 skinparam classAttributeIconSize 0
 
+' ==================== ENUMS ====================
 enum PapelUsuario {
   ALUNO
   PROFESSOR
   EMPRESA
 }
 
-class Usuario {
+' ==================== MODEL ====================
+abstract class Usuario {
   +id: UUID
   +nome: String
   +email: String
@@ -22,16 +24,19 @@ class Aluno {
   +endereco: String
   +curso: String
   +saldoAtual: BigDecimal
+  +instituicao: InstituicaoEnsino
 }
 
 class Professor {
   +cpf: String
   +departamento: String
   +saldoAtual: BigDecimal
+  +instituicao: InstituicaoEnsino
 }
 
 class EmpresaParceira {
   +nomeFantasia: String
+  +vantagens: List<Vantagem>
 }
 
 class InstituicaoEnsino {
@@ -55,6 +60,7 @@ class Vantagem {
   +fotoUrl: String
   +custoMoedas: BigDecimal
   +ativa: Boolean
+  +empresa: EmpresaParceira
 }
 
 class ResgateVantagem {
@@ -80,36 +86,86 @@ class Cupom {
   +expirou(diasValidade: int): boolean
 }
 
+' ==================== INTERFACES FORNECIDAS ====================
+interface INotificacaoService {
+  +notificarDistribuicaoMoedas(prof: Professor, aluno: Aluno, valor: BigDecimal)
+  +notificarResgateVantagem(aluno: Aluno, empresa: EmpresaParceira, cupom: Cupom)
+}
+
+interface IQrCodeService {
+  +gerarQrCode(codigo: String): String
+}
+
+interface IAuthService {
+  +autenticar(request: AuthRequest): AuthResponse
+}
+
+' ==================== SERVICES ====================
+class NotificacaoService <<service>> {
+  -mailSender: JavaMailSender
+  +notificarDistribuicaoMoedas(prof: Professor, aluno: Aluno, valor: BigDecimal)
+  +notificarResgateVantagem(aluno: Aluno, empresa: EmpresaParceira, cupom: Cupom)
+}
+
+class QrCodeService <<service>> {
+  +gerarQrCode(codigo: String): String
+}
+
+class AuthService <<service>> {
+  +autenticar(request: AuthRequest): AuthResponse
+}
+
+class ResgateService <<service>> {
+  +resgatar(request: ResgateRequest): ResgateResponse
+  +consultarPorId(id: UUID): ResgateResponse
+}
+
 class SaldoSemestralService <<service>> {
   +RECARGA_SEMESTRAL: BigDecimal = 1000
   +aplicarRecargaParaTodos()
   +aplicarRecargaParaProfessor(professorId: UUID)
 }
 
+' ==================== HERANÇA ====================
 Usuario <|-- Aluno
 Usuario <|-- Professor
 Usuario <|-- EmpresaParceira
 
-Aluno "*" --> "1" InstituicaoEnsino : vinculado a
-Professor "*" --> "1" InstituicaoEnsino : vinculado a
+' ==================== COMPOSIÇÃO ====================
+' Vantagem não existe sem EmpresaParceira (orphanRemoval = true)
+EmpresaParceira "1" *-- "*" Vantagem : contém
 
-TransacaoMoeda "*" --> "1" Professor : remetenteId
-TransacaoMoeda "*" --> "1" Aluno : destinatarioId
+' ==================== AGREGAÇÃO ====================
+' Aluno e Professor referenciam InstituicaoEnsino; podem existir independentemente
+InstituicaoEnsino "1" o-- "*" Aluno : agrega
+InstituicaoEnsino "1" o-- "*" Professor : agrega
 
-EmpresaParceira "1" --> "*" Vantagem : oferece
+' ==================== ASSOCIAÇÕES ====================
+TransacaoMoeda "*" --> "1" Professor : remetente
+TransacaoMoeda "*" --> "1" Aluno : destinatario
+
 ResgateVantagem "*" --> "1" Aluno : alunoId
 ResgateVantagem "*" --> "1" Vantagem : vantagemId
+
 Cupom "*" --> "1" Usuario : usuario
 Cupom "*" --> "1" Vantagem : vantagem
 
+' ==================== INTERFACES: fornecidas (implementação) ====================
+NotificacaoService ..|> INotificacaoService
+QrCodeService ..|> IQrCodeService
+AuthService ..|> IAuthService
+
+' ==================== INTERFACES: requeridas (dependência) ====================
+ResgateService ..> INotificacaoService : <<require>>
+ResgateService ..> IQrCodeService : <<require>>
 SaldoSemestralService ..> Professor : atualiza saldo
 
+' ==================== NOTAS ====================
 note bottom of TransacaoMoeda
 Registro obrigatorio de:
-- remetente
-- destinatario
-- valor
-- mensagem
+- remetente (Professor)
+- destinatario (Aluno)
+- valor e mensagem
 end note
 
 note bottom of SaldoSemestralService
@@ -121,6 +177,16 @@ note bottom of Cupom
 Cupom inclui URL de QR Code,
 status de uso e metadados
 de validacao/resgate
+end note
+
+note right of INotificacaoService
+Interface FORNECIDA por NotificacaoService
+Interface REQUERIDA por ResgateService
+end note
+
+note right of IQrCodeService
+Interface FORNECIDA por QrCodeService
+Interface REQUERIDA por ResgateService
 end note
 
 @enduml

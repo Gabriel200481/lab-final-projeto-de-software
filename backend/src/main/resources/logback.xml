@@ -1,0 +1,31 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Aplicação: INFO -->
+    <logger name="br.com.moedaestudantil" level="INFO"/>
+
+    <!-- Micronaut startup/runtime: INFO (exibe tempo de inicialização e porta) -->
+    <logger name="io.micronaut.runtime" level="INFO"/>
+    <logger name="io.micronaut.context.env" level="INFO"/>
+
+    <!-- Micronaut internos verbosos: WARN (bean, introspection, routing debug) -->
+    <logger name="io.micronaut" level="WARN"/>
+    <logger name="io.netty" level="WARN"/>
+
+    <!-- Hibernate/JPA: WARN -->
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+
+    <!-- H2: WARN -->
+    <logger name="org.h2" level="WARN"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

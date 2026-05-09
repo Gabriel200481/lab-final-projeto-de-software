@@ -11,25 +11,25 @@ actor Professor
 actor "Empresa Parceira" as Empresa
 
 rectangle "Sistema de Moeda Estudantil" {
-  usecase "Login/Autenticacao" as UC_LOGIN
+  usecase "UC01\nLogin/Autenticacao" as UC_LOGIN
 
-  usecase "Cadastrar-se\n(Aluno)" as UC_CAD_ALUNO
-  usecase "Cadastrar-se\n(Empresa)" as UC_CAD_EMP
-  usecase "Consultar Instituicoes" as UC_INSTITUICOES
+  usecase "UC02\nCadastrar-se\n(Aluno)" as UC_CAD_ALUNO
+  usecase "UC03\nCadastrar-se\n(Empresa)" as UC_CAD_EMP
+  usecase "UC04\nConsultar Instituicoes" as UC_INSTITUICOES
 
-  usecase "Consultar Extrato\n(Aluno)" as UC_EXT_ALUNO
-  usecase "Consultar Resumo de Extrato\n(Aluno)" as UC_EXT_ALUNO_RES
-  usecase "Resgatar Vantagem" as UC_RESGATE
-  usecase "Consultar Resgate por ID" as UC_GET_RESGATE
-  usecase "Consultar QR Code do Cupom" as UC_QRCODE
+  usecase "UC05\nConsultar Extrato\n(Aluno)" as UC_EXT_ALUNO
+  usecase "UC06\nConsultar Resumo de Extrato\n(Aluno)" as UC_EXT_ALUNO_RES
+  usecase "UC07\nResgatar Vantagem" as UC_RESGATE
+  usecase "UC08\nConsultar Resgate por ID" as UC_GET_RESGATE
+  usecase "UC09\nConsultar QR Code do Cupom" as UC_QRCODE
 
-  usecase "Distribuir Moedas\n(com mensagem)" as UC_DISTRIBUIR
-  usecase "Consultar Extrato\n(Professor)" as UC_EXT_PROF
-  usecase "Consultar Resumo de Extrato\n(Professor)" as UC_EXT_PROF_RES
-  usecase "Aplicar Recarga Semestral" as UC_RECARGA
+  usecase "UC10\nDistribuir Moedas\n(com mensagem)" as UC_DISTRIBUIR
+  usecase "UC11\nConsultar Extrato\n(Professor)" as UC_EXT_PROF
+  usecase "UC12\nConsultar Resumo de Extrato\n(Professor)" as UC_EXT_PROF_RES
+  usecase "UC13\nAplicar Recarga Semestral" as UC_RECARGA
 
-  usecase "Cadastrar Vantagem\n(descricao + foto + custo)" as UC_CAD_VANT
-  usecase "Listar Vantagens da Empresa" as UC_LISTA_VANT
+  usecase "UC14\nCadastrar Vantagem\n(descricao + foto + custo)" as UC_CAD_VANT
+  usecase "UC15\nListar Vantagens da Empresa" as UC_LISTA_VANT
 }
 
 Aluno --> UC_CAD_ALUNO
@@ -60,6 +60,11 @@ UC_EXT_PROF_RES ..> UC_LOGIN : <<include>>
 UC_RECARGA ..> UC_LOGIN : <<include>>
 UC_CAD_VANT ..> UC_LOGIN : <<include>>
 UC_LISTA_VANT ..> UC_LOGIN : <<include>>
+
+UC_EXT_ALUNO_RES ..> UC_EXT_ALUNO : <<extend>>
+UC_EXT_PROF_RES ..> UC_EXT_PROF : <<extend>>
+UC_GET_RESGATE ..> UC_RESGATE : <<extend>>
+UC_QRCODE ..> UC_RESGATE : <<extend>>
 
 note right of UC_DISTRIBUIR
 Mensagem justificativa obrigatoria

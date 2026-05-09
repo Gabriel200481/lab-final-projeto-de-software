@@ -1,0 +1,94 @@
+# Sistema de Moeda Estudantil — Release 1
+
+Pretende-se desenvolver um sistema para estimular o reconhecimento do mérito
+estudantil através de uma moeda virtual. Essa moeda pode ser distribuída por
+professores aos seus alunos e trocada pelos alunos por produtos e descontos em
+empresas parceiras.
+
+---
+
+## Descrição do Sistema
+
+### Alunos
+
+- Devem realizar cadastro informando: **nome, email, CPF, RG, endereço, instituição de ensino e curso**.
+- As instituições participantes já estão **pré-cadastradas** no sistema para seleção.
+
+### Professores
+
+- Já estarão **pré-cadastrados** (a instituição envia a lista no momento da parceria).
+- Dados armazenados: **nome, CPF, departamento e instituição** a que está vinculado.
+
+### Distribuição de Moedas
+
+- A cada semestre, cada professor recebe **1.000 moedas**.
+- O saldo é **acumulável**: moedas não distribuídas em um semestre somam-se ao saldo do próximo.
+- Para enviar moedas, o professor deve:
+  - Ter **saldo suficiente**.
+  - Indicar o **aluno destinatário**.
+  - Informar uma **mensagem obrigatória** justificando o reconhecimento.
+- O aluno recebe uma **notificação por email** ao receber moedas.
+
+### Extrato
+
+- Professores e alunos podem consultar o extrato de sua conta, contendo:
+  - Total de moedas disponíveis.
+  - Histórico de transações (envios para professores; recebimentos/trocas para alunos).
+
+### Troca de Moedas (Vantagens)
+
+- O aluno seleciona uma vantagem cadastrada no sistema.
+- Exemplos: desconto em restaurante universitário, desconto de mensalidade, compra de materiais.
+- Ao resgatar:
+  - O valor é **debitado do saldo do aluno**.
+  - Um **email com cupom e código único** é enviado ao aluno (para uso presencial).
+  - Um **email de confirmação** é enviado à empresa parceira.
+
+### Empresas Parceiras
+
+- Realizam cadastro no sistema.
+- Cadastram as **vantagens** que desejam oferecer, incluindo: descrição, foto e custo em moedas.
+
+### Autenticação
+
+- Todos os perfis (aluno, professor, empresa parceira) precisam de **login e senha**.
+- Autenticação é exigida para realizar qualquer operação do sistema.
+
+---
+
+## Apresentação Final (Sprint 03)
+
+- Apresentar o **protótipo da Release 1** comparando com os modelos iniciais.
+- Apontar as **modificações realizadas** para adequação ao funcionamento do software.
+- Apresentar um **tutorial das tecnologias** utilizadas (~20 min) — formato "salão de tecnologias".
+- O sistema deve seguir arquitetura **MVC**.
+- O repositório GitHub deve estar atualizado com todos os **modelos UML** e o **código final**.
+
+### Critérios de Avaliação
+
+| Critério | Descrição |
+|---|---|
+| Qualidade do sistema | Adequação aos requisitos apresentados |
+| Alinhamento modelo–código | Consistência entre diagrama de classes/arquitetura e implementação |
+| Atualização dos modelos | Modelos revisados conforme necessidade do projeto |
+
+---
+
+## Processo de Desenvolvimento
+
+| Sprint | Entregas |
+|---|---|
+| **Lab03S01** | Diagrama de Casos de Uso, Histórias do Usuário, Diagrama de Classes e Diagrama de Componentes |
+| **Lab03S02** | Modelo ER, estratégia de acesso ao banco (ORM/DAO), CRUDs de aluno e empresa (versão inicial: front-end + back-end) |
+| **Lab03S03** | CRUDs de aluno e empresa (versão final), apresentação da arquitetura e camada de persistência (preparar slides) |
+
+---
+
+## Links e Prazos
+
+- **Template README:** https://github.com/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software/blob/main/TEMPLATES/template_README.md
+- **Cronograma:** https://github.com/joaopauloaramuni/laboratorio-de-desenvolvimento-de-software/tree/main/CRONOGRAMA
+- **Valor total:** 20 pontos — desconto de 1,0 ponto por dia de atraso
+
+> **Atenção:** Semanalmente, todos os grupos deverão apresentar o andamento das entregas durante a aula.
+> A não participação implicará na **perda automática de 50% dos pontos** da sprint.

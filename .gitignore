@@ -1,6 +1,35 @@
-target/
-qrcodes/
-*.log
-.env
-.DS_Store
+# === Backend (Micronaut / Maven) ===
+backend/target/
+backend/*.jar
+backend/.mvn/wrapper/maven-wrapper.jar
+
+# === Frontend (Angular / Node) ===
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.cache/
+
+# === IDEs ===
 .vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# === Logs ===
+*.log
+
+# === Env / Secrets ===
+.env
+.env.*
+
+# === QR codes gerados ===
+qrcodes/
