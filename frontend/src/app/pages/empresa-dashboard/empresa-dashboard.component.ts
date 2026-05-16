@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
-import { VantagemResponse, EmpresaResponse } from '../../models/usuario.model';
+import { VantagemResponse } from '../../models/usuario.model';
 
 @Component({
   selector: 'app-empresa-dashboard',
@@ -12,93 +12,377 @@ import { VantagemResponse, EmpresaResponse } from '../../models/usuario.model';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="dashboard">
-      <header class="dash-header">
-        <h2>Painel da Empresa</h2>
-        <div class="header-info">
-          <span class="user-name">{{ userName }}</span>
-          <button class="btn btn-sm btn-logout" (click)="logout()">Sair</button>
+
+      <!-- Header -->
+      <header class="header">
+        <div class="header-inner">
+          <div class="header-left">
+            <div class="header-icon">E</div>
+            <div>
+              <h1>Painel da Empresa</h1>
+              <p>Bem-vindo, {{ userName }}</p>
+            </div>
+          </div>
+          <div class="header-right">
+            <button class="btn-logout" (click)="logout()">Sair</button>
+          </div>
         </div>
       </header>
 
-      <div class="tabs">
-        <button [class.active]="tab === 'vantagens'" (click)="tab = 'vantagens'; carregarVantagens()">Minhas Vantagens</button>
-        <button [class.active]="tab === 'cadastrar'" (click)="tab = 'cadastrar'">Cadastrar Vantagem</button>
-      </div>
+      <!-- Tabs -->
+      <div class="content-area">
+        <div class="tabs">
+          <button [class.active]="tab==='vantagens'" (click)="tab='vantagens'">Minhas Vantagens</button>
+          <button [class.active]="tab==='cadastrar'" (click)="tab='cadastrar'">Cadastrar Vantagem</button>
+        </div>
 
-      <!-- LISTAR VANTAGENS -->
-      <div *ngIf="tab === 'vantagens'" class="tab-content">
-        <div class="vantagens-list">
-          <div *ngFor="let v of vantagens" class="vantagem-card">
-            <img [src]="v.fotoUrl" [alt]="v.descricao" class="vantagem-img" onerror="this.src='https://via.placeholder.com/100'">
-            <div class="vantagem-info">
-              <p class="vantagem-desc">{{ v.descricao }}</p>
-              <p class="vantagem-custo">{{ v.custoMoedas | number:'1.2-2' }} moedas</p>
-              <span class="badge" [class.ativa]="v.ativa" [class.inativa]="!v.ativa">
-                {{ v.ativa ? 'Ativa' : 'Inativa' }}
-              </span>
+        <!-- Tab: Minhas Vantagens -->
+        <div class="tab-content" *ngIf="tab==='vantagens'">
+          <div class="card">
+            <h2>Vantagens Cadastradas</h2>
+            <p class="card-subtitle">Gerencie as vantagens oferecidas aos alunos</p>
+
+            <div *ngIf="vantagens.length === 0" class="empty-state">
+              Nenhuma vantagem cadastrada ainda.
+            </div>
+
+            <div class="vantagens-grid" *ngIf="vantagens.length > 0">
+              <div class="vantagem-card" *ngFor="let v of vantagens">
+                <div class="vantagem-img" *ngIf="v.fotoUrl">
+                  <img [src]="v.fotoUrl" [alt]="v.descricao" loading="lazy">
+                </div>
+                <div class="vantagem-img vantagem-placeholder" *ngIf="!v.fotoUrl">
+                  <span>Sem foto</span>
+                </div>
+                <div class="vantagem-info">
+                  <h3>{{ v.descricao }}</h3>
+                  <div class="vantagem-custo">
+                    <span class="custo-icon">$</span>
+                    <span>{{ v.custoMoedas }} MC</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <p *ngIf="vantagens.length === 0" class="empty">Nenhuma vantagem cadastrada.</p>
         </div>
-      </div>
 
-      <!-- CADASTRAR VANTAGEM -->
-      <div *ngIf="tab === 'cadastrar'" class="tab-content">
-        <div *ngIf="cadErro" class="alert alert-danger">{{ cadErro }}</div>
-        <div *ngIf="cadSucesso" class="alert alert-success">{{ cadSucesso }}</div>
+        <!-- Tab: Cadastrar Vantagem -->
+        <div class="tab-content" *ngIf="tab==='cadastrar'">
+          <div class="card">
+            <h2>Nova Vantagem</h2>
+            <p class="card-subtitle">Cadastre um beneficio para os alunos resgatarem</p>
 
-        <form (ngSubmit)="cadastrarVantagem()" class="cad-form">
-          <div class="form-group">
-            <label>Descrição</label>
-            <textarea [(ngModel)]="cadDescricao" name="cadDescricao" required rows="3" placeholder="Descrição da vantagem"></textarea>
+            <div *ngIf="cadErro" class="alert alert-danger">{{ cadErro }}</div>
+            <div *ngIf="cadSucesso" class="alert alert-success">{{ cadSucesso }}</div>
+
+            <div class="form-group">
+              <label>Descricao</label>
+              <input type="text" [(ngModel)]="cadDescricao" placeholder="Ex: Desconto de 15% em pizzas">
+            </div>
+
+            <div class="form-group">
+              <label>URL da Foto</label>
+              <input type="text" [(ngModel)]="cadFotoUrl" placeholder="https://exemplo.com/foto.jpg">
+            </div>
+
+            <div class="form-group">
+              <label>Custo em Moedas</label>
+              <input type="number" [(ngModel)]="cadCusto" placeholder="Ex: 50" min="1">
+            </div>
+
+            <button class="btn-primary" (click)="cadastrarVantagem()" [disabled]="cadLoading">
+              {{ cadLoading ? 'Salvando...' : 'Cadastrar Vantagem' }}
+            </button>
           </div>
-          <div class="form-group">
-            <label>URL da Foto</label>
-            <input [(ngModel)]="cadFotoUrl" name="cadFotoUrl" required placeholder="https://exemplo.com/foto.jpg">
-          </div>
-          <div class="form-group">
-            <label>Custo (moedas)</label>
-            <input type="number" [(ngModel)]="cadCusto" name="cadCusto" required min="0.01" step="0.01" placeholder="Ex: 100">
-          </div>
-          <button type="submit" [disabled]="cadLoading" class="btn btn-primary">
-            {{ cadLoading ? 'Cadastrando...' : 'Cadastrar Vantagem' }}
-          </button>
-        </form>
+        </div>
+
       </div>
     </div>
   `,
   styles: [`
-    .dashboard { max-width: 900px; margin: 0 auto; padding: 1rem; }
-    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
-    .header-info { display: flex; align-items: center; gap: 1rem; }
-    .user-name { font-weight: 600; color: #2d3748; }
-    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
-    .tabs button { padding: 0.5rem 1rem; border: 1px solid #e2e8f0; border-radius: 4px; background: #fff; cursor: pointer; }
-    .tabs button.active { background: #805ad5; color: #fff; border-color: #805ad5; }
-    .tab-content { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-    .vantagens-list { display: flex; flex-direction: column; gap: 0.8rem; }
-    .vantagem-card { display: flex; gap: 1rem; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; align-items: center; }
-    .vantagem-img { width: 100px; height: 100px; object-fit: cover; border-radius: 4px; }
-    .vantagem-info { flex: 1; }
-    .vantagem-desc { margin: 0; font-weight: 600; font-size: 1.1rem; }
-    .vantagem-custo { margin: 0.3rem 0; color: #2b6cb0; font-weight: 700; }
-    .badge { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
-    .badge.ativa { background: #c6f6d5; color: #276749; }
-    .badge.inativa { background: #fed7d7; color: #c53030; }
-    .cad-form { max-width: 500px; }
+    .dashboard {
+      min-height: 100vh;
+      background: #f0f4f8;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%);
+      color: #fff;
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .header-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: #fff;
+    }
+
+    .header-left h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .header-left p {
+      font-size: 0.82rem;
+      opacity: 0.85;
+      margin: 0.15rem 0 0;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-logout {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+    /* Tabs */
+    .content-area {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      background: #fff;
+      padding: 0.4rem;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      color: #4a5568;
+      transition: all 0.2s;
+    }
+
+    .tabs button.active {
+      background: linear-gradient(135deg, #6a1b9a, #4a148c);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(106,27,154,0.3);
+    }
+
+    .tabs button:not(.active):hover { background: #f7fafc; color: #6a1b9a; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .card h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #4a148c;
+      margin: 0 0 0.3rem;
+    }
+
+    .card-subtitle {
+      color: #718096;
+      font-size: 0.88rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Vantagens grid */
+    .vantagens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .vantagem-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .vantagem-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .vantagem-img {
+      height: 140px;
+      overflow: hidden;
+      background: #f7fafc;
+    }
+
+    .vantagem-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .vantagem-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a0aec0;
+      font-size: 0.88rem;
+    }
+
+    .vantagem-info {
+      padding: 1rem;
+    }
+
+    .vantagem-info h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin: 0 0 0.5rem;
+    }
+
+    .vantagem-custo {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 700;
+      color: #6a1b9a;
+      font-size: 0.95rem;
+    }
+
+    .custo-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f9a825, #ff8f00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: #5d2e00;
+    }
+
+    /* Form */
     .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; color: #4a5568; }
-    .form-group input, .form-group textarea { width: 100%; padding: 0.6rem; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 1rem; box-sizing: border-box; }
-    .empty { color: #a0aec0; text-align: center; padding: 2rem; }
-    .alert-danger { background: #fed7d7; color: #c53030; padding: 0.7rem; border-radius: 4px; margin-bottom: 1rem; }
-    .alert-success { background: #c6f6d5; color: #276749; padding: 0.7rem; border-radius: 4px; margin-bottom: 1rem; }
-    .btn { padding: 0.5rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; background: #edf2f7; }
-    .btn-sm { font-size: 0.9rem; }
-    .btn-primary { background: #805ad5; color: #fff; }
-    .btn-primary:hover { background: #6b46c1; }
-    .btn-primary:disabled { background: #a0aec0; }
-    .btn-logout { background: #e53e3e; color: #fff; }
-    .btn-logout:hover { background: #c53030; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #2d3748;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      color: #2d3748;
+    }
+
+    .form-group input:focus {
+      border-color: #6a1b9a;
+      box-shadow: 0 0 0 3px rgba(106,27,154,0.08);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      padding: 0.75rem 2rem;
+      background: linear-gradient(135deg, #6a1b9a, #4a148c);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
+
+    .empty-state {
+      text-align: center;
+      color: #a0aec0;
+      padding: 2rem;
+      font-size: 0.95rem;
+    }
+
+    /* Alerts */
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+    }
+
+    .alert-danger {
+      background: #fff5f5;
+      color: #c53030;
+      border-left: 3px solid #fc8181;
+    }
+
+    .alert-success {
+      background: #f0fff4;
+      color: #276749;
+      border-left: 3px solid #68d391;
+    }
+
+    @media (max-width: 640px) {
+      .header-inner { flex-direction: column; gap: 0.75rem; text-align: center; }
+      .tabs { flex-direction: column; }
+      .card { padding: 1.25rem; }
+      .vantagens-grid { grid-template-columns: 1fr; }
+    }
   `]
 })
 export class EmpresaDashboardComponent implements OnInit {

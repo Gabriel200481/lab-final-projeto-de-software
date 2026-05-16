@@ -6,7 +6,6 @@ import br.com.moedaestudantil.model.Professor;
 import java.math.BigDecimal;
 import io.micronaut.context.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,10 +87,13 @@ public class NotificacaoService {
         try {
             mailSender.send(mensagem);
             LOGGER.info("EMAIL enviado para {} [{}] ({})", tipo, nome, destino);
-        } catch (MailException ex) {
+        } catch (Exception ex) {
             LOGGER.warn("Falha no envio SMTP para {} [{}] ({}). Modo fallback ativo.", tipo, nome, destino, ex);
             if (falharSeNaoEnviar) {
-                throw ex;
+                if (ex instanceof RuntimeException re) {
+                    throw re;
+                }
+                throw new RuntimeException(ex);
             }
         }
     }

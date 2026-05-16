@@ -13,8 +13,6 @@ import { RouterOutlet } from '@angular/router';
   styles: [`
     .app-container {
       min-height: 100vh;
-      background: #f7fafc;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
   `]
 })
