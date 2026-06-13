@@ -95,9 +95,10 @@ import { AuthService } from '../../services/auth.service';
       min-height: 100vh;
     }
 
+    /* ── Left panel ── */
     .login-left {
-      flex: 0 0 45%;
-      background: linear-gradient(160deg, #0d1456 0%, #1a237e 50%, #1565c0 100%);
+      flex: 0 0 44%;
+      background: linear-gradient(145deg, #0A0F2E 0%, #1a237e 55%, #1565c0 100%);
       position: relative;
       overflow: hidden;
       display: flex;
@@ -109,88 +110,94 @@ import { AuthService } from '../../services/auth.service';
     .deco-circle {
       position: absolute;
       border-radius: 50%;
-      background: #f9a825;
+      background: radial-gradient(circle, #F59E0B, #D97706);
+      pointer-events: none;
     }
-    .dc-1 { width: 320px; height: 320px; top: -90px;  right: -110px; opacity: 0.10; }
-    .dc-2 { width: 220px; height: 220px; bottom: -70px; left: -70px;  opacity: 0.08; }
-    .dc-3 { width: 130px; height: 130px; top: 55%;     left: 72%;     opacity: 0.06; }
+    .dc-1 { width: 420px; height: 420px; top: -140px; right: -150px; opacity: 0.09; }
+    .dc-2 { width: 280px; height: 280px; bottom: -100px; left: -100px; opacity: 0.07; }
+    .dc-3 { width: 160px; height: 160px; top: 52%; left: 68%; opacity: 0.05; }
 
     .brand-content {
       position: relative;
       z-index: 1;
       color: #fff;
       text-align: center;
-      max-width: 340px;
+      max-width: 360px;
     }
 
     .coin-logo {
       display: flex;
       justify-content: center;
-      margin-bottom: 1.5rem;
-      filter: drop-shadow(0 4px 14px rgba(249,168,37,0.55));
+      margin-bottom: 2rem;
+      filter: drop-shadow(0 6px 20px rgba(245,158,11,0.6));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
 
     .brand-title {
-      font-size: 2.6rem;
+      font-size: 2.8rem;
       font-weight: 900;
-      line-height: 1.15;
-      margin-bottom: 1rem;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.35);
-      letter-spacing: -0.5px;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+      letter-spacing: -1px;
     }
 
     .brand-tagline {
-      font-size: 1rem;
-      opacity: 0.88;
-      margin-bottom: 2rem;
-      line-height: 1.6;
+      font-size: 0.95rem;
+      opacity: 0.78;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
     }
 
-    .brand-features {
-      list-style: none;
-      text-align: left;
-    }
+    .brand-features { list-style: none; text-align: left; }
 
     .brand-features li {
       display: flex;
-      align-items: flex-start;
-      gap: 0.7rem;
-      margin-bottom: 0.75rem;
-      font-size: 0.88rem;
-      opacity: 0.93;
-      background: rgba(255,255,255,0.09);
-      padding: 0.55rem 0.9rem;
-      border-radius: 8px;
-      border-left: 3px solid #f9a825;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.65rem;
+      font-size: 0.875rem;
+      opacity: 0.92;
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(4px);
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.2s;
     }
+    .brand-features li:hover { background: rgba(255,255,255,0.12); }
 
     .feat-icon {
-      display: inline-block;
-      width: 20px; height: 20px;
-      border-radius: 50%;
+      width: 28px; height: 28px;
+      border-radius: 8px;
       flex-shrink: 0;
-      margin-top: 2px;
+      display: flex; align-items: center; justify-content: center;
     }
-    .feat-grad { background: #4caf50; }
-    .feat-coin { background: #f9a825; }
-    .feat-biz  { background: #7c4dff; }
+    .feat-grad { background: linear-gradient(135deg,#059669,#047857); }
+    .feat-coin { background: linear-gradient(135deg,#F59E0B,#D97706); }
+    .feat-biz  { background: linear-gradient(135deg,#7C3AED,#6D28D9); }
 
+    /* ── Right panel ── */
     .login-right {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f0f4f8;
+      background: #F1F5F9;
       padding: 2rem;
     }
 
     .login-card {
       background: #fff;
-      border-radius: 16px;
-      padding: 2.5rem;
+      border-radius: 20px;
+      padding: 2.75rem;
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 4px 28px rgba(0,0,0,0.09);
+      max-width: 430px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 40px rgba(0,0,0,0.08);
     }
 
     .login-card-header {
@@ -199,142 +206,146 @@ import { AuthService } from '../../services/auth.service';
       gap: 1rem;
       margin-bottom: 2rem;
       padding-bottom: 1.5rem;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #F1F5F9;
     }
 
     .login-coin-sm {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #f9a825, #ff8f00);
-      color: #5d2e00;
+      width: 50px; height: 50px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #fff;
       font-weight: 900;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 0.95rem;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 2px 10px rgba(249,168,37,0.45);
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+      letter-spacing: 0.5px;
     }
 
     .login-card-header h2 {
-      font-size: 1.1rem;
-      color: #1a237e;
+      font-size: 1.05rem;
+      color: #0F172A;
       margin: 0;
       font-weight: 700;
     }
 
     .login-card-header p {
-      font-size: 0.85rem;
-      color: #718096;
-      margin: 0.2rem 0 0;
+      font-size: 0.82rem;
+      color: #64748B;
+      margin: 0.15rem 0 0;
     }
 
-    .form-group { margin-bottom: 1.2rem; }
+    .form-group { margin-bottom: 1.1rem; }
 
     .form-group label {
       display: block;
       margin-bottom: 0.4rem;
       font-weight: 600;
-      font-size: 0.9rem;
-      color: #2d3748;
+      font-size: 0.82rem;
+      color: #374151;
+      letter-spacing: 0.2px;
     }
 
     .form-group input {
       width: 100%;
       padding: 0.75rem 1rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 1rem;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
       box-sizing: border-box;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.15s, box-shadow 0.15s;
       outline: none;
-      color: #2d3748;
+      color: #0F172A;
+      background: #FAFAFA;
     }
-
     .form-group input:focus {
-      border-color: #1a237e;
-      box-shadow: 0 0 0 3px rgba(26,35,126,0.08);
+      border-color: #2563EB;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
     }
+    .form-group input::placeholder { color: #94A3B8; }
 
     .btn-login {
       width: 100%;
       padding: 0.85rem;
-      background: linear-gradient(135deg, #1565c0, #1a237e);
+      background: #2563EB;
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
       margin-top: 0.5rem;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
+      box-shadow: 0 1px 2px rgba(37,99,235,0.3);
     }
-
-    .btn-login:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn-login:hover:not(:disabled) {
+      background: #1D4ED8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+    }
     .btn-login:active:not(:disabled) { transform: translateY(0); }
-    .btn-login:disabled { background: #a0aec0; cursor: not-allowed; }
+    .btn-login:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
 
     .alert-danger {
-      background: #fff5f5;
-      color: #c53030;
+      background: #FEF2F2;
+      color: #DC2626;
       padding: 0.75rem 1rem;
-      border-radius: 8px;
-      border-left: 3px solid #fc8181;
+      border-radius: 10px;
+      border: 1px solid #FECACA;
       margin-bottom: 1rem;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      font-weight: 500;
     }
 
-    .links {
-      margin-top: 1.75rem;
-      text-align: center;
-    }
+    .links { margin-top: 1.75rem; text-align: center; }
 
     .links p {
-      color: #718096;
-      font-size: 0.88rem;
+      color: #64748B;
+      font-size: 0.85rem;
       margin-bottom: 0.75rem;
     }
 
-    .register-links {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-    }
+    .register-links { display: flex; gap: 0.65rem; justify-content: center; }
 
     .reg-link {
-      padding: 0.55rem 1.1rem;
-      border-radius: 8px;
+      flex: 1;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
       font-size: 0.85rem;
       font-weight: 600;
       text-decoration: none !important;
-      transition: all 0.2s;
+      transition: all 0.15s;
       border: 1.5px solid transparent;
+      text-align: center;
     }
 
     .reg-aluno {
-      background: #ebf8ff;
-      color: #1a237e;
-      border-color: #bee3f8;
+      background: #EFF6FF;
+      color: #2563EB;
+      border-color: #BFDBFE;
     }
-    .reg-aluno:hover { background: #1a237e; color: #fff; }
+    .reg-aluno:hover { background: #2563EB; color: #fff; border-color: #2563EB; }
 
     .reg-empresa {
-      background: #faf5ff;
-      color: #553c9a;
-      border-color: #e9d8fd;
+      background: #F5F3FF;
+      color: #7C3AED;
+      border-color: #DDD6FE;
     }
-    .reg-empresa:hover { background: #553c9a; color: #fff; }
+    .reg-empresa:hover { background: #7C3AED; color: #fff; border-color: #7C3AED; }
 
     @media (max-width: 768px) {
       .login-page { flex-direction: column; }
       .login-left { flex: none; padding: 2rem 1.5rem; min-height: auto; }
       .brand-features { display: none; }
-      .brand-title { font-size: 1.8rem; }
-      .brand-tagline { margin-bottom: 0; font-size: 0.9rem; }
+      .brand-title { font-size: 2rem; }
+      .brand-tagline { margin-bottom: 0; }
+      .coin-logo { animation: none; }
       .login-right { padding: 1.5rem 1rem; }
-      .login-card { padding: 1.75rem; border-radius: 12px; }
+      .login-card { padding: 2rem; border-radius: 16px; }
     }
   `]
 })

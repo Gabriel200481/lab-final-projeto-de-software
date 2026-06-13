@@ -1,0 +1,160 @@
+@startuml sequencia-geral
+!theme plain
+title Sequencia Geral: Sistema de Moeda Estudantil
+
+actor Aluno
+actor Professor
+actor Empresa
+participant "Frontend (app.js)" as UI
+participant "AuthController" as AC
+participant "TransacaoController" as TC
+participant "EmpresaController" as EC
+participant "ResgateController" as RC
+participant "ExtratoController" as XC
+participant "Service + Repository" as BE
+participant "QrCodeService" as QR
+participant "NotificacaoService" as NS
+
+== Autenticacao (todos os perfis) ==
+Aluno -> UI: Login (email + senha)
+activate UI
+UI -> AC: POST /api/auth/login
+activate AC
+AC -> BE: autenticar(credentials)
+activate BE
+BE --> AC: JWT token
+deactivate BE
+AC --> UI: 200 OK + token
+deactivate AC
+deactivate UI
+
+== Distribuicao de Moedas ==
+Professor -> UI: Seleciona aluno, valor e mensagem
+activate UI
+UI -> TC: POST /api/transacoes/distribuicao
+activate TC
+TC -> BE: distribuirMoedas(request)
+activate BE
+BE -> BE: validar saldo e mensagem obrigatoria
+
+alt saldo insuficiente ou mensagem vazia
+  BE --> TC: BusinessException
+  deactivate BE
+  TC --> UI: HTTP 400
+  deactivate TC
+  deactivate UI
+else dados validos
+  BE -> BE: debitar professor, creditar aluno, salvar transacao
+  BE -> NS: enviarRecebimentoMoedasParaAluno(aluno, valor, mensagem)
+  activate NS
+  NS --> Aluno: Email HTML com valor recebido e mensagem
+  deactivate NS
+  BE -> NS: enviarConfirmacaoDistribuicaoParaProfessor(professor, aluno, valor)
+  activate NS
+  NS --> Professor: Email HTML com confirmacao da distribuicao
+  deactivate NS
+  BE --> TC: TransacaoResponse
+  deactivate BE
+  TC --> UI: HTTP 201
+  deactivate TC
+  deactivate UI
+end
+
+== Cadastro de Vantagem (Empresa) ==
+Empresa -> UI: Preenche descricao, fotoUrl e custo
+activate UI
+UI -> EC: POST /api/empresas/{id}/vantagens
+activate EC
+EC -> BE: adicionarVantagem(empresaId, request)
+activate BE
+
+alt empresa nao encontrada
+  BE --> EC: NotFoundException
+  deactivate BE
+  EC --> UI: HTTP 404
+  deactivate EC
+  deactivate UI
+else empresa valida
+  BE --> EC: VantagemResponse
+  deactivate BE
+  EC --> UI: HTTP 201
+  deactivate EC
+  deactivate UI
+end
+
+== Listagem de Vantagens (Aluno) ==
+Aluno -> UI: Acessa aba "Resgatar Vantagem"
+activate UI
+UI -> EC: GET /api/empresas
+activate EC
+EC -> BE: listarTodasComVantagens()
+activate BE
+BE --> EC: List<EmpresaResponse> (com vantagens embutidas)
+deactivate BE
+EC --> UI: HTTP 200
+deactivate EC
+deactivate UI
+
+== Resgate de Vantagem (Aluno) ==
+Aluno -> UI: Clica em "Resgatar" em uma vantagem
+activate UI
+UI -> RC: POST /api/resgates
+activate RC
+RC -> BE: resgatar(alunoId, vantagemId)
+activate BE
+BE -> BE: buscar aluno e vantagem ativa
+
+alt saldo insuficiente
+  BE --> RC: BusinessException
+  deactivate BE
+  RC --> UI: HTTP 400
+  deactivate RC
+  deactivate UI
+else saldo valido
+  BE -> BE: debitar saldo do aluno e salvar ResgateVantagem com codigo unico
+  BE -> QR: gerarQrCode(codigoUnico, nomeArquivo)
+  activate QR
+  QR --> BE: qrCodeUrl (PNG armazenado em disco)
+  deactivate QR
+  BE -> BE: salvar Cupom com codigo e qrCodeUrl
+  BE -> NS: enviarConfirmacaoResgateParaAluno(aluno, codigo, qrCodeUrl)
+  activate NS
+  NS --> Aluno: Email HTML com codigo destacado e QR Code embutido
+  deactivate NS
+  BE -> NS: enviarConfirmacaoResgateParaEmpresa(empresa, codigo, qrCodeUrl)
+  activate NS
+  NS --> Empresa: Email HTML com codigo e QR Code para validacao
+  deactivate NS
+  BE --> RC: ResgateResponse (codigo + qrCodeUrl)
+  deactivate BE
+  RC --> UI: HTTP 201
+  deactivate RC
+  deactivate UI
+end
+
+== Consulta de Extrato ==
+Aluno -> UI: Acessa aba "Extrato" com filtro de datas
+activate UI
+UI -> XC: GET /api/extratos/alunos/{id}/resumo
+activate XC
+XC -> BE: extratoAlunoComResumo(alunoId, dataInicio, dataFim)
+activate BE
+BE --> XC: ExtratoResumoResponse (saldo + transacoes)
+deactivate BE
+XC --> UI: HTTP 200
+deactivate XC
+deactivate UI
+
+Professor -> UI: Acessa aba "Extrato"
+activate UI
+UI -> XC: GET /api/extratos/professores/{id}/resumo
+activate XC
+XC -> BE: extratoProfessorComResumo(professorId, dataInicio, dataFim)
+activate BE
+BE --> XC: ExtratoResumoResponse (saldo + distribuicoes)
+deactivate BE
+XC --> UI: HTTP 200
+deactivate XC
+deactivate UI
+
+@enduml

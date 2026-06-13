@@ -3,6 +3,7 @@
 title Sequencia: Cadastro e listagem de vantagens (implementacao atual)
 
 actor Empresa
+actor Aluno
 participant "Frontend (app.js)" as UI
 participant "EmpresaController" as EC
 participant "EmpresaService" as ES
@@ -10,24 +11,58 @@ participant "EmpresaParceiraRepository" as ER
 participant "VantagemRepository" as VR
 
 Empresa -> UI: Preenche descricao, fotoUrl e custo
+activate UI
+
 UI -> EC: POST /api/empresas/{id}/vantagens
+activate EC
+
 EC -> ES: adicionarVantagem(empresaId, request)
+activate ES
+
 ES -> ER: findById(empresaId)
+activate ER
 
 alt empresa nao encontrada
+  ER --> ES: empty
+  deactivate ER
   ES --> EC: NotFoundException
+  deactivate ES
   EC --> UI: HTTP 404
+  deactivate EC
+  deactivate UI
 else empresa valida
+  ER --> ES: EmpresaParceira
+  deactivate ER
   ES -> VR: save(Vantagem)
+  activate VR
+  VR --> ES: Vantagem salva
+  deactivate VR
   ES --> EC: VantagemResponse
+  deactivate ES
   EC --> UI: HTTP 201
+  deactivate EC
+  deactivate UI
 end
 
 Aluno -> UI: Seleciona empresa para consultar vantagens
+activate UI
+
 UI -> EC: GET /api/empresas/{id}/vantagens
+activate EC
+
 EC -> ES: listarVantagens(id)
+activate ES
+
 ES -> VR: findByEmpresaId(id)
+activate VR
+VR --> ES: List<Vantagem>
+deactivate VR
+
 ES --> EC: List<VantagemResponse>
+deactivate ES
+
 EC --> UI: HTTP 200
+deactivate EC
+deactivate UI
 
 @enduml

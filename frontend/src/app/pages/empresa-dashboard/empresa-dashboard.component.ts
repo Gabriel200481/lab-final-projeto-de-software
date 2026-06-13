@@ -100,285 +100,215 @@ import { VantagemResponse } from '../../models/usuario.model';
     </div>
   `,
   styles: [`
-    .dashboard {
-      min-height: 100vh;
-      background: #f0f4f8;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
+    .dashboard { min-height: 100vh; background: #F1F5F9; }
 
-    /* Header */
+    /* ── Header ── */
     .header {
-      background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%);
+      background: #7C3AED;
       color: #fff;
-      padding: 0;
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.1), 0 4px 16px rgba(124,58,237,0.25);
     }
 
     .header-inner {
-      max-width: 1100px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 1rem 1.5rem;
+      padding: 0 1.75rem;
+      height: 64px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-    }
+    .header-left { display: flex; align-items: center; gap: 0.85rem; }
 
     .header-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
+      width: 40px; height: 40px;
+      border-radius: 11px;
       background: rgba(255,255,255,0.18);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 1.3rem;
-      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.2rem;
     }
 
-    .header-left h1 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin: 0;
-    }
+    .header-left h1 { font-size: 1.05rem; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
+    .header-left p { font-size: 0.78rem; opacity: 0.75; margin: 0.1rem 0 0; }
 
-    .header-left p {
-      font-size: 0.82rem;
-      opacity: 0.85;
-      margin: 0.15rem 0 0;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
+    .header-right { display: flex; align-items: center; }
 
     .btn-logout {
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.12);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 0.5rem 1.1rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 0.4rem 0.95rem;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.83rem;
       font-weight: 500;
+      font-family: inherit;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.15s;
     }
-    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+    .btn-logout:hover { background: rgba(255,255,255,0.22); }
 
-    /* Tabs */
-    .content-area {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
+    /* ── Content ── */
+    .content-area { max-width: 1120px; margin: 0 auto; padding: 1.75rem; }
 
+    /* ── Tabs ── */
     .tabs {
       display: flex;
-      gap: 0.5rem;
+      gap: 4px;
       margin-bottom: 1.5rem;
       background: #fff;
-      padding: 0.4rem;
-      border-radius: 10px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+      padding: 4px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
     .tabs button {
       flex: 1;
-      padding: 0.7rem 1rem;
+      padding: 0.65rem 1rem;
       background: transparent;
       border: none;
-      border-radius: 8px;
+      border-radius: 9px;
       font-weight: 600;
-      font-size: 0.88rem;
+      font-size: 0.875rem;
+      font-family: inherit;
       cursor: pointer;
-      color: #4a5568;
-      transition: all 0.2s;
+      color: #64748B;
+      transition: all 0.15s;
     }
+    .tabs button.active { background: #7C3AED; color: #fff; box-shadow: 0 1px 3px rgba(124,58,237,0.35); }
+    .tabs button:not(.active):hover { background: #F8FAFC; color: #7C3AED; }
 
-    .tabs button.active {
-      background: linear-gradient(135deg, #6a1b9a, #4a148c);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(106,27,154,0.3);
-    }
-
-    .tabs button:not(.active):hover { background: #f7fafc; color: #6a1b9a; }
-
-    /* Card */
+    /* ── Card ── */
     .card {
       background: #fff;
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 2rem;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
     }
 
-    .card h2 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #4a148c;
-      margin: 0 0 0.3rem;
-    }
+    .card h2 { font-size: 1.1rem; font-weight: 700; color: #0F172A; margin: 0 0 0.25rem; }
+    .card-subtitle { color: #64748B; font-size: 0.875rem; margin-bottom: 1.5rem; }
 
-    .card-subtitle {
-      color: #718096;
-      font-size: 0.88rem;
-      margin-bottom: 1.5rem;
-    }
-
-    /* Vantagens grid */
+    /* ── Vantagens grid ── */
     .vantagens-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.2rem;
+      gap: 1.1rem;
     }
 
     .vantagem-card {
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
       overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
     }
-
     .vantagem-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(124,58,237,0.12);
+      border-color: #DDD6FE;
     }
 
-    .vantagem-img {
-      height: 140px;
-      overflow: hidden;
-      background: #f7fafc;
-    }
-
-    .vantagem-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .vantagem-img { height: 148px; overflow: hidden; background: #F5F3FF; }
+    .vantagem-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .vantagem-card:hover .vantagem-img img { transform: scale(1.04); }
 
     .vantagem-placeholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #a0aec0;
-      font-size: 0.88rem;
+      height: 148px;
+      display: flex; align-items: center; justify-content: center;
+      background: #F5F3FF;
+      color: #A78BFA;
+      font-size: 0.85rem;
+      font-weight: 500;
     }
 
-    .vantagem-info {
-      padding: 1rem;
-    }
-
-    .vantagem-info h3 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #2d3748;
-      margin: 0 0 0.5rem;
-    }
+    .vantagem-info { padding: 1rem 1.1rem; }
+    .vantagem-info h3 { font-size: 0.9rem; font-weight: 600; color: #0F172A; margin: 0 0 0.5rem; line-height: 1.4; }
 
     .vantagem-custo {
       display: flex;
       align-items: center;
       gap: 0.4rem;
       font-weight: 700;
-      color: #6a1b9a;
-      font-size: 0.95rem;
+      color: #7C3AED;
+      font-size: 0.9rem;
     }
 
     .custo-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #f9a825, #ff8f00);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem;
       font-weight: 900;
-      color: #5d2e00;
+      color: #fff;
     }
 
-    /* Form */
+    /* ── Form ── */
     .form-group { margin-bottom: 1rem; }
 
     .form-group label {
       display: block;
       margin-bottom: 0.35rem;
       font-weight: 600;
-      font-size: 0.85rem;
-      color: #2d3748;
+      font-size: 0.8rem;
+      color: #374151;
+      letter-spacing: 0.2px;
     }
 
     .form-group input {
       width: 100%;
       padding: 0.7rem 0.9rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
       outline: none;
       box-sizing: border-box;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      color: #2d3748;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      color: #0F172A;
+      background: #FAFAFA;
     }
-
     .form-group input:focus {
-      border-color: #6a1b9a;
-      box-shadow: 0 0 0 3px rgba(106,27,154,0.08);
+      border-color: #7C3AED;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
     }
+    .form-group input::placeholder { color: #94A3B8; }
 
-    /* Buttons */
+    /* ── Buttons ── */
     .btn-primary {
       padding: 0.75rem 2rem;
-      background: linear-gradient(135deg, #6a1b9a, #4a148c);
+      background: #7C3AED;
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      box-shadow: 0 1px 2px rgba(124,58,237,0.3);
     }
-    .btn-primary:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
-    .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
+    .btn-primary:hover:not(:disabled) {
+      background: #6D28D9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(124,58,237,0.35);
+    }
+    .btn-primary:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
 
-    .empty-state {
-      text-align: center;
-      color: #a0aec0;
-      padding: 2rem;
-      font-size: 0.95rem;
-    }
+    .empty-state { text-align: center; color: #94A3B8; padding: 3rem; font-size: 0.9rem; }
 
-    /* Alerts */
-    .alert {
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      margin-bottom: 1rem;
-      font-size: 0.88rem;
-    }
-
-    .alert-danger {
-      background: #fff5f5;
-      color: #c53030;
-      border-left: 3px solid #fc8181;
-    }
-
-    .alert-success {
-      background: #f0fff4;
-      color: #276749;
-      border-left: 3px solid #68d391;
-    }
+    /* ── Alerts ── */
+    .alert { padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 1rem; font-size: 0.875rem; font-weight: 500; }
+    .alert-danger { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+    .alert-success { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
 
     @media (max-width: 640px) {
-      .header-inner { flex-direction: column; gap: 0.75rem; text-align: center; }
+      .header-inner { flex-wrap: wrap; height: auto; padding: 0.75rem 1rem; gap: 0.5rem; }
       .tabs { flex-direction: column; }
       .card { padding: 1.25rem; }
       .vantagens-grid { grid-template-columns: 1fr; }

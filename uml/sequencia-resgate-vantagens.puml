@@ -14,23 +14,60 @@ participant "CupomRepository" as CR
 participant "NotificacaoService" as NS
 
 Aluno -> UI: Escolhe vantagem e confirma resgate
+activate UI
+
 UI -> RC: POST /api/resgates
+activate RC
+
 RC -> RS: resgatar(request)
+activate RS
+
 RS -> AR: findById(alunoId)
+activate AR
+AR --> RS: Aluno
+deactivate AR
+
 RS -> VR: findByIdAndAtivaTrue(vantagemId)
+activate VR
+VR --> RS: Vantagem
+deactivate VR
 
 alt saldo insuficiente
   RS --> RC: BusinessException
+  deactivate RS
   RC --> UI: HTTP 400
+  deactivate RC
+  deactivate UI
 else saldo valido
   RS -> AR: save(aluno com saldo debitado)
+  activate AR
+  AR --> RS: ok
+  deactivate AR
   RS -> RR: save(ResgateVantagem com codigo unico)
+  activate RR
+  RR --> RS: ResgateVantagem
+  deactivate RR
   RS -> QR: gerarQrCode(codigo, nomeArquivo)
+  activate QR
+  QR --> RS: qrCodeUrl
+  deactivate QR
   RS -> CR: save(Cupom)
+  activate CR
+  CR --> RS: ok
+  deactivate CR
   RS -> NS: enviarConfirmacaoResgateParaAluno(...)
+  activate NS
+  NS --> RS: ok
+  deactivate NS
   RS -> NS: enviarConfirmacaoResgateParaEmpresa(...)
+  activate NS
+  NS --> RS: ok
+  deactivate NS
   RS --> RC: ResgateResponse
+  deactivate RS
   RC --> UI: HTTP 201
+  deactivate RC
+  deactivate UI
 end
 
 @enduml

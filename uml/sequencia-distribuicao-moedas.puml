@@ -12,22 +12,56 @@ participant "TransacaoMoedaRepository" as TR
 participant "NotificacaoService" as NS
 
 Professor -> UI: Envia formulario
+activate UI
+
 UI -> TC: POST /api/transacoes/distribuicao
+activate TC
+
 TC -> TS: distribuirMoedas(request)
+activate TS
+
 TS -> PR: findById(professorId)
+activate PR
+PR --> TS: Professor
+deactivate PR
+
 TS -> AR: findById(alunoId)
+activate AR
+AR --> TS: Aluno
+deactivate AR
 
 alt saldo insuficiente ou mensagem vazia
   TS --> TC: BusinessException
+  deactivate TS
   TC --> UI: HTTP 400
+  deactivate TC
+  deactivate UI
 else dados validos
   TS -> PR: save(professor com saldo debito)
+  activate PR
+  PR --> TS: ok
+  deactivate PR
   TS -> AR: save(aluno com saldo credito)
+  activate AR
+  AR --> TS: ok
+  deactivate AR
   TS -> TR: save(TransacaoMoeda)
+  activate TR
+  TR --> TS: ok
+  deactivate TR
   TS -> NS: enviarRecebimentoMoedasParaAluno(...)
+  activate NS
+  NS --> TS: ok
+  deactivate NS
   TS -> NS: enviarConfirmacaoDistribuicaoParaProfessor(...)
+  activate NS
+  NS --> TS: ok
+  deactivate NS
   TS --> TC: TransacaoResponse
+  deactivate TS
   TC --> UI: HTTP 201
+  deactivate TC
+  deactivate UI
 end
 
 @enduml

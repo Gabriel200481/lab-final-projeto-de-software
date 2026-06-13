@@ -136,211 +136,265 @@ import {
     </div>
   `,
   styles: [`
-    .app-wrapper {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: #eef2f7;
-    }
+    .app-wrapper { min-height: 100vh; display: flex; flex-direction: column; background: #F1F5F9; }
 
+    /* ── Header ── */
     .app-header {
-      background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+      background: #2563EB;
       color: #fff;
       padding: 0 2rem;
       height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.22);
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.1), 0 4px 16px rgba(37,99,235,0.25);
     }
 
-    .header-brand { display: flex; align-items: center; gap: 0.9rem; }
+    .header-brand { display: flex; align-items: center; gap: 0.85rem; }
 
     .header-coin {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #f9a825, #ff8f00);
-      color: #5d2e00;
-      font-weight: 900; font-size: 0.9rem;
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #fff;
+      font-weight: 900; font-size: 0.8rem;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
       flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(245,158,11,0.5);
+      letter-spacing: 0.5px;
     }
 
     .header-texts { display: flex; flex-direction: column; }
-    .brand-name   { font-weight: 700; font-size: 1rem; line-height: 1.2; }
-    .role-label   { font-size: 0.75rem; opacity: 0.75; }
+    .brand-name { font-weight: 700; font-size: 0.95rem; line-height: 1.2; letter-spacing: -0.2px; }
+    .role-label { font-size: 0.72rem; opacity: 0.7; font-weight: 500; }
 
-    .header-actions { display: flex; align-items: center; gap: 1rem; }
+    .header-actions { display: flex; align-items: center; gap: 0.75rem; }
 
     .user-chip {
-      display: flex; align-items: center; gap: 0.4rem;
       background: rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 0.3rem 0.8rem;
-      font-size: 0.88rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 0.3rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 500;
     }
 
     .btn-logout {
-      padding: 0.35rem 0.9rem;
-      background: rgba(255,255,255,0.18);
+      padding: 0.4rem 0.95rem;
+      background: rgba(255,255,255,0.12);
       color: #fff;
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 6px;
-      font-size: 0.85rem;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      font-size: 0.83rem;
+      font-weight: 500;
+      font-family: inherit;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.15s;
     }
-    .btn-logout:hover { background: rgba(255,255,255,0.28); }
+    .btn-logout:hover { background: rgba(255,255,255,0.22); }
 
-    .page-content { flex: 1; padding: 2rem 1.5rem; }
-    .content-wrapper { max-width: 960px; margin: 0 auto; }
+    /* ── Layout ── */
+    .page-content { flex: 1; padding: 1.75rem 1.5rem; }
+    .content-wrapper { max-width: 980px; margin: 0 auto; }
 
+    /* ── Tabs ── */
     .tabs {
       display: flex;
-      gap: 0.5rem;
+      gap: 4px;
       margin-bottom: 1.5rem;
+      background: #fff;
+      padding: 4px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
       flex-wrap: wrap;
     }
 
     .tabs button {
-      padding: 0.55rem 1.2rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      background: #fff;
+      flex: 1;
+      min-width: 120px;
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
       cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #4a5568;
-      transition: all 0.2s;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: #64748B;
+      transition: all 0.15s;
     }
-
-    .tabs button:hover { border-color: #1565c0; color: #1565c0; }
+    .tabs button:hover:not(.active) { background: #F8FAFC; color: #2563EB; }
     .tabs button.active {
-      background: linear-gradient(135deg, #1565c0, #0d47a1);
+      background: #2563EB;
       color: #fff;
-      border-color: transparent;
-      box-shadow: 0 2px 8px rgba(21,101,192,0.3);
+      box-shadow: 0 1px 3px rgba(37,99,235,0.35);
     }
 
+    /* ── Tab content ── */
     .tab-content {
       background: #fff;
       padding: 1.75rem;
-      border-radius: 12px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
     }
 
+    /* ── Saldo card ── */
     .saldo-card {
       display: flex;
       align-items: center;
-      gap: 1.2rem;
-      background: linear-gradient(135deg, #ebf8ff, #dbeafe);
+      gap: 1.25rem;
+      background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
       padding: 1.25rem 1.5rem;
-      border-radius: 12px;
+      border-radius: 14px;
       margin-bottom: 1.5rem;
-      border-left: 4px solid #1565c0;
+      border: 1px solid #BFDBFE;
     }
 
     .saldo-icon {
-      font-size: 1.5rem;
-      width: 50px; height: 50px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #f9a825, #ff8f00);
-      color: #5d2e00;
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 900;
+      font-weight: 900; font-size: 1.3rem;
       flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(245,158,11,0.4);
     }
-    .saldo-label { margin: 0; font-size: 0.85rem; color: #4a5568; font-weight: 600; }
-    .saldo { font-size: 2rem; font-weight: 800; color: #1565c0; }
-    .saldo-unit { font-size: 1rem; color: #4a5568; }
 
-    .filtro { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; }
-    .filtro label { display: flex; align-items: center; gap: 0.3rem; font-size: 0.9rem; }
+    .saldo-label { margin: 0; font-size: 0.78rem; color: #64748B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .saldo { font-size: 2.1rem; font-weight: 800; color: #2563EB; letter-spacing: -1px; line-height: 1; }
+    .saldo-unit { font-size: 0.9rem; color: #64748B; margin-left: 0.25rem; font-weight: 500; }
+
+    /* ── Filtro ── */
+    .filtro { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .filtro label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 500; color: #374151; }
     .filtro input {
-      padding: 0.35rem 0.6rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 6px;
-      font-size: 0.9rem;
-    }
-
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th, .data-table td {
-      padding: 0.65rem 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #f0f4f8;
-      font-size: 0.9rem;
-    }
-    .data-table th { background: #f7fafc; font-weight: 700; color: #4a5568; }
-    .data-table tr:hover td { background: #fafbfd; }
-    .positivo { color: #2e7d32; font-weight: 700; }
-    .negativo { color: #c62828; font-weight: 700; }
-
-    .vantagens-grid { display: flex; flex-direction: column; gap: 1.5rem; }
-    .empresa-titulo {
-      color: #1a237e;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 0.4rem 0;
-      margin-bottom: 0.75rem;
-      border-bottom: 2px solid #ebf8ff;
-    }
-    .vantagem-card {
-      display: flex; gap: 1rem; padding: 1rem;
-      border: 1.5px solid #e2e8f0; border-radius: 10px;
-      align-items: center; margin-bottom: 0.6rem;
-      transition: box-shadow 0.2s;
-    }
-    .vantagem-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-    .vantagem-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
-    .vantagem-info { flex: 1; }
-    .vantagem-desc { margin: 0; font-weight: 600; color: #2d3748; }
-    .vantagem-custo { margin: 0.3rem 0; color: #1565c0; font-weight: 700; font-size: 0.95rem; }
-
-    .qr-img { max-width: 180px; margin-top: 0.75rem; border-radius: 8px; }
-    .form-inline { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
-    .form-inline input {
-      padding: 0.5rem 0.8rem;
-      border: 1.5px solid #e2e8f0;
+      padding: 0.4rem 0.75rem;
+      border: 1.5px solid #E2E8F0;
       border-radius: 8px;
-      min-width: 260px;
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      font-family: inherit;
+      outline: none;
+      color: #0F172A;
+      transition: border-color 0.15s;
     }
-    .resgate-detail {
-      background: #f7fafc;
-      padding: 1.2rem;
-      border-radius: 10px;
-      border-left: 3px solid #1565c0;
-      line-height: 1.9;
+    .filtro input:focus { border-color: #2563EB; }
+
+    /* ── Table ── */
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748B;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #F1F5F9;
+      background: #F8FAFC;
+    }
+    .data-table td {
+      padding: 0.75rem 0.85rem;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: #FAFBFF; }
+    .positivo { color: #059669; font-weight: 700; }
+    .negativo { color: #DC2626; font-weight: 700; }
+
+    /* ── Vantagens ── */
+    .vantagens-grid { display: flex; flex-direction: column; gap: 1.75rem; }
+
+    .empresa-titulo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #0F172A;
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.85rem;
+      border-bottom: 2px solid #EFF6FF;
     }
 
+    .vantagem-card {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      align-items: center;
+      margin-bottom: 0.65rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .vantagem-card:hover { border-color: #BFDBFE; box-shadow: 0 2px 12px rgba(37,99,235,0.08); }
+    .vantagem-img { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; flex-shrink: 0; background: #F1F5F9; }
+    .vantagem-info { flex: 1; }
+    .vantagem-desc { margin: 0 0 0.3rem; font-weight: 600; color: #0F172A; font-size: 0.9rem; }
+    .vantagem-custo { margin: 0 0 0.6rem; color: #2563EB; font-weight: 700; font-size: 0.9rem; }
+
+    /* ── QR / Resgate detail ── */
+    .qr-img { max-width: 180px; margin-top: 0.75rem; border-radius: 10px; border: 1px solid #E2E8F0; }
+
+    .form-inline { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    .form-inline input {
+      padding: 0.6rem 0.9rem;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      min-width: 280px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      color: #0F172A;
+      transition: border-color 0.15s;
+    }
+    .form-inline input:focus { border-color: #2563EB; }
+
+    .resgate-detail {
+      background: #F8FAFC;
+      padding: 1.25rem;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      line-height: 2;
+      font-size: 0.9rem;
+    }
+
+    /* ── Alerts ── */
     .alert-danger {
-      background: #fff5f5; color: #c53030;
-      padding: 0.75rem 1rem; border-radius: 8px;
-      border-left: 3px solid #fc8181; margin-bottom: 1rem; font-size: 0.9rem;
+      background: #FEF2F2; color: #DC2626;
+      padding: 0.75rem 1rem; border-radius: 10px;
+      border: 1px solid #FECACA; margin-bottom: 1rem;
+      font-size: 0.875rem; font-weight: 500;
     }
     .alert-success {
-      background: #f0fff4; color: #276749;
-      padding: 0.75rem 1rem; border-radius: 8px;
-      border-left: 3px solid #68d391; margin-bottom: 1rem; font-size: 0.9rem;
-      line-height: 1.8;
+      background: #ECFDF5; color: #059669;
+      padding: 1rem 1.1rem; border-radius: 10px;
+      border: 1px solid #A7F3D0; margin-bottom: 1rem;
+      font-size: 0.875rem; font-weight: 500; line-height: 1.9;
     }
-    .empty { color: #a0aec0; text-align: center; padding: 3rem; font-size: 0.95rem; }
+    .empty { color: #94A3B8; text-align: center; padding: 3rem; font-size: 0.9rem; }
 
+    /* ── Buttons ── */
     .btn {
-      padding: 0.45rem 1.1rem;
-      border: none; border-radius: 6px;
-      cursor: pointer; font-size: 0.88rem;
-      background: #edf2f7; color: #4a5568;
-      transition: background 0.2s;
+      padding: 0.45rem 1rem;
+      border: none; border-radius: 8px;
+      cursor: pointer; font-size: 0.85rem; font-family: inherit;
+      background: #F1F5F9; color: #475569;
+      transition: background 0.15s;
     }
-    .btn-sm { font-size: 0.85rem; padding: 0.4rem 0.9rem; }
-    .btn-primary { background: linear-gradient(135deg, #1565c0, #0d47a1); color: #fff; }
-    .btn-primary:hover:not(:disabled) { opacity: 0.9; }
-    .btn-primary:disabled { background: #a0aec0; cursor: not-allowed; }
+    .btn-sm { font-size: 0.82rem; padding: 0.38rem 0.85rem; }
+    .btn-primary {
+      background: #2563EB;
+      color: #fff;
+      box-shadow: 0 1px 2px rgba(37,99,235,0.25);
+    }
+    .btn-primary:hover:not(:disabled) { background: #1D4ED8; }
+    .btn-primary:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
   `]
 })
 export class AlunoDashboardComponent implements OnInit {

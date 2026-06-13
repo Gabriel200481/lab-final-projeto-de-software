@@ -97,8 +97,8 @@ flyway:
 javamail:
   host: ${MAIL_HOST:smtp.gmail.com}
   port: ${MAIL_PORT:587}
-  username: ${MAIL_USERNAME:email.teste.lab03@gmail.com}
-  password: ${MAIL_PASSWORD:}
+  username: ${MAIL_USERNAME:thalescarvalho622@gmail.com}
+  password: ${MAIL_PASSWORD:ojztunfqrvryksch}
   properties:
     mail:
       smtp:

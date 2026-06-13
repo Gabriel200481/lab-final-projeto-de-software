@@ -98,11 +98,11 @@ interface Instituicao {
   styles: [`
     .register-page {
       min-height: 100vh;
-      background: linear-gradient(160deg, #0d1456 0%, #1a237e 50%, #1565c0 100%);
+      background: linear-gradient(145deg, #0A0F2E 0%, #1a237e 55%, #1565c0 100%);
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding: 2.5rem 1rem 3rem;
+      padding: 2.5rem 1rem 4rem;
       position: relative;
       overflow: hidden;
     }
@@ -110,155 +110,139 @@ interface Instituicao {
     .deco-circle {
       position: absolute;
       border-radius: 50%;
-      background: #f9a825;
+      background: radial-gradient(circle, #F59E0B, #D97706);
       pointer-events: none;
     }
-    .dc-1 { width: 380px; height: 380px; top: -120px; right: -130px; opacity: 0.08; }
-    .dc-2 { width: 250px; height: 250px; bottom: -80px; left: -80px;  opacity: 0.07; }
-    .dc-3 { width: 140px; height: 140px; top: 60%;    left: 75%;      opacity: 0.05; }
+    .dc-1 { width: 500px; height: 500px; top: -180px; right: -180px; opacity: 0.07; }
+    .dc-2 { width: 300px; height: 300px; bottom: -100px; left: -100px; opacity: 0.06; }
+    .dc-3 { width: 180px; height: 180px; top: 55%; left: 72%; opacity: 0.04; }
 
     .register-wrapper {
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 680px;
+      max-width: 700px;
     }
 
     .register-card {
       background: #fff;
-      border-radius: 16px;
-      padding: 2rem 2.5rem 2.5rem;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-      border-top: 4px solid #2e7d32;
+      border-radius: 20px;
+      padding: 2.25rem 2.75rem 2.75rem;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12), 0 32px 64px rgba(0,0,0,0.16);
+      border-top: 4px solid #059669;
     }
 
-    .card-header {
-      margin-bottom: 1.5rem;
-    }
+    .card-header { margin-bottom: 1.5rem; }
 
     .back-link {
-      font-size: 0.9rem;
-      color: #1565c0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.875rem;
+      color: #64748B;
       text-decoration: none;
       font-weight: 500;
-      transition: color 0.2s;
+      transition: color 0.15s;
     }
-    .back-link:hover { color: #0d47a1; }
+    .back-link:hover { color: #2563EB; }
 
     .card-brand {
       display: flex;
       align-items: center;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
       padding-bottom: 1.5rem;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #F1F5F9;
     }
 
     .brand-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
       font-weight: 900;
       font-size: 1.4rem;
       color: #fff;
       flex-shrink: 0;
     }
+    .brand-aluno { background: linear-gradient(135deg, #2563EB, #1D4ED8); box-shadow: 0 4px 12px rgba(37,99,235,0.35); }
 
-    .brand-aluno {
-      background: linear-gradient(135deg, #1565c0, #1a237e);
-    }
-
-    .card-brand h1 {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #1a237e;
-      margin: 0;
-    }
-
-    .card-brand p {
-      font-size: 0.85rem;
-      color: #718096;
-      margin: 0.2rem 0 0;
-    }
+    .card-brand h1 { font-size: 1.2rem; font-weight: 700; color: #0F172A; margin: 0; }
+    .card-brand p { font-size: 0.85rem; color: #64748B; margin: 0.2rem 0 0; }
 
     .alert {
       padding: 0.75rem 1rem;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-bottom: 1rem;
-      font-size: 0.88rem;
+      font-size: 0.875rem;
+      font-weight: 500;
     }
-
-    .alert-danger {
-      background: #fff5f5;
-      color: #c53030;
-      border-left: 3px solid #fc8181;
-    }
-
-    .alert-success {
-      background: #f0fff4;
-      color: #276749;
-      border-left: 3px solid #68d391;
-    }
+    .alert-danger { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+    .alert-success { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
 
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.75rem 1.2rem;
+      gap: 0.65rem 1.25rem;
     }
 
-    .form-group { margin-bottom: 0.5rem; }
+    .form-group { margin-bottom: 0.25rem; }
 
     .form-group label {
       display: block;
       margin-bottom: 0.35rem;
       font-weight: 600;
-      font-size: 0.85rem;
-      color: #2d3748;
+      font-size: 0.8rem;
+      color: #374151;
+      letter-spacing: 0.2px;
     }
 
     .form-group input,
     .form-group select {
       width: 100%;
       padding: 0.65rem 0.9rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border: 1.5px solid #E2E8F0;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
       box-sizing: border-box;
-      color: #2d3748;
-      background: #fff;
+      color: #0F172A;
+      background: #FAFAFA;
     }
-
     .form-group input:focus,
     .form-group select:focus {
-      border-color: #1a237e;
-      box-shadow: 0 0 0 3px rgba(26,35,126,0.08);
+      border-color: #2563EB;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
     }
+    .form-group input::placeholder { color: #94A3B8; }
 
     .btn-submit {
       width: 100%;
       padding: 0.85rem;
-      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      background: #059669;
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: 10px;
+      font-size: 0.95rem;
       font-weight: 600;
+      font-family: inherit;
       cursor: pointer;
-      margin-top: 1.2rem;
-      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 1.25rem;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      box-shadow: 0 1px 2px rgba(5,150,105,0.3);
     }
-
-    .btn-submit:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
-    .btn-submit:disabled { background: #a0aec0; cursor: not-allowed; }
+    .btn-submit:hover:not(:disabled) {
+      background: #047857;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(5,150,105,0.35);
+    }
+    .btn-submit:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
 
     @media (max-width: 640px) {
       .form-grid { grid-template-columns: 1fr; }
-      .register-card { padding: 1.5rem; }
+      .register-card { padding: 1.75rem; }
     }
   `]
 })
