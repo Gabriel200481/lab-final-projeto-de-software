@@ -12,6 +12,7 @@ participant "EmpresaController" as EC
 participant "ResgateController" as RC
 participant "ExtratoController" as XC
 participant "Service + Repository" as BE
+participant "Fila de Mensagens" as MQ
 participant "QrCodeService" as QR
 participant "NotificacaoService" as NS
 
@@ -44,7 +45,10 @@ alt saldo insuficiente ou mensagem vazia
   deactivate TC
   deactivate UI
 else dados validos
-  BE -> BE: debitar professor, creditar aluno, salvar transacao
+  BE -> MQ: enqueue(evento de distribuicao)
+  activate MQ
+  MQ -> BE: debitar professor, creditar aluno, salvar TransacaoMoeda
+  deactivate MQ
   BE -> NS: enviarRecebimentoMoedasParaAluno(aluno, valor, mensagem)
   activate NS
   NS --> Aluno: Email HTML com valor recebido e mensagem
@@ -75,6 +79,10 @@ alt empresa nao encontrada
   deactivate EC
   deactivate UI
 else empresa valida
+  BE -> MQ: enqueue(salvar Vantagem)
+  activate MQ
+  MQ -> BE: persistir Vantagem vinculada a empresa
+  deactivate MQ
   BE --> EC: VantagemResponse
   deactivate BE
   EC --> UI: HTTP 201
@@ -111,12 +119,18 @@ alt saldo insuficiente
   deactivate RC
   deactivate UI
 else saldo valido
-  BE -> BE: debitar saldo do aluno e salvar ResgateVantagem com codigo unico
+  BE -> MQ: enqueue(evento de resgate)
+  activate MQ
+  MQ -> BE: debitar saldo do aluno e salvar ResgateVantagem com codigo unico
+  deactivate MQ
   BE -> QR: gerarQrCode(codigoUnico, nomeArquivo)
   activate QR
   QR --> BE: qrCodeUrl (PNG armazenado em disco)
   deactivate QR
-  BE -> BE: salvar Cupom com codigo e qrCodeUrl
+  BE -> MQ: enqueue(salvar Cupom)
+  activate MQ
+  MQ -> BE: persistir Cupom com codigo e qrCodeUrl
+  deactivate MQ
   BE -> NS: enviarConfirmacaoResgateParaAluno(aluno, codigo, qrCodeUrl)
   activate NS
   NS --> Aluno: Email HTML com codigo destacado e QR Code embutido

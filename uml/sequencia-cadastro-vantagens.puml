@@ -8,6 +8,7 @@ participant "Frontend (app.js)" as UI
 participant "EmpresaController" as EC
 participant "EmpresaService" as ES
 participant "EmpresaParceiraRepository" as ER
+participant "Fila de Mensagens" as MQ
 participant "VantagemRepository" as VR
 
 Empresa -> UI: Preenche descricao, fotoUrl e custo
@@ -33,10 +34,14 @@ alt empresa nao encontrada
 else empresa valida
   ER --> ES: EmpresaParceira
   deactivate ER
-  ES -> VR: save(Vantagem)
+  ES -> MQ: enqueue(salvar Vantagem)
+  activate MQ
+  MQ -> VR: save(Vantagem)
   activate VR
-  VR --> ES: Vantagem salva
+  VR --> MQ: Vantagem salva
   deactivate VR
+  MQ --> ES: ack
+  deactivate MQ
   ES --> EC: VantagemResponse
   deactivate ES
   EC --> UI: HTTP 201

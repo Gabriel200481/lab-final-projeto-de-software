@@ -8,6 +8,7 @@ participant "ResgateController" as RC
 participant "ResgateService" as RS
 participant "AlunoRepository" as AR
 participant "VantagemRepository" as VR
+participant "Fila de Mensagens" as MQ
 participant "ResgateVantagemRepository" as RR
 participant "QrCodeService" as QR
 participant "CupomRepository" as CR
@@ -39,22 +40,30 @@ alt saldo insuficiente
   deactivate RC
   deactivate UI
 else saldo valido
-  RS -> AR: save(aluno com saldo debitado)
+  RS -> MQ: enqueue(evento de resgate)
+  activate MQ
+  MQ -> AR: save(aluno com saldo debitado)
   activate AR
-  AR --> RS: ok
+  AR --> MQ: ok
   deactivate AR
-  RS -> RR: save(ResgateVantagem com codigo unico)
+  MQ -> RR: save(ResgateVantagem com codigo unico)
   activate RR
-  RR --> RS: ResgateVantagem
+  RR --> MQ: ResgateVantagem
   deactivate RR
+  MQ --> RS: ack
+  deactivate MQ
   RS -> QR: gerarQrCode(codigo, nomeArquivo)
   activate QR
   QR --> RS: qrCodeUrl
   deactivate QR
-  RS -> CR: save(Cupom)
+  RS -> MQ: enqueue(salvar Cupom)
+  activate MQ
+  MQ -> CR: save(Cupom)
   activate CR
-  CR --> RS: ok
+  CR --> MQ: ok
   deactivate CR
+  MQ --> RS: ack
+  deactivate MQ
   RS -> NS: enviarConfirmacaoResgateParaAluno(...)
   activate NS
   NS --> RS: ok

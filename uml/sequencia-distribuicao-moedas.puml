@@ -8,6 +8,7 @@ participant "TransacaoController" as TC
 participant "TransacaoService" as TS
 participant "ProfessorRepository" as PR
 participant "AlunoRepository" as AR
+participant "Fila de Mensagens" as MQ
 participant "TransacaoMoedaRepository" as TR
 participant "NotificacaoService" as NS
 
@@ -37,18 +38,22 @@ alt saldo insuficiente ou mensagem vazia
   deactivate TC
   deactivate UI
 else dados validos
-  TS -> PR: save(professor com saldo debito)
+  TS -> MQ: enqueue(evento de distribuicao)
+  activate MQ
+  MQ -> PR: save(professor com saldo debitado)
   activate PR
-  PR --> TS: ok
+  PR --> MQ: ok
   deactivate PR
-  TS -> AR: save(aluno com saldo credito)
+  MQ -> AR: save(aluno com saldo creditado)
   activate AR
-  AR --> TS: ok
+  AR --> MQ: ok
   deactivate AR
-  TS -> TR: save(TransacaoMoeda)
+  MQ -> TR: save(TransacaoMoeda)
   activate TR
-  TR --> TS: ok
+  TR --> MQ: ok
   deactivate TR
+  MQ --> TS: ack
+  deactivate MQ
   TS -> NS: enviarRecebimentoMoedasParaAluno(...)
   activate NS
   NS --> TS: ok
