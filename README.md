@@ -2,16 +2,15 @@
 
 ---
 
-# 🏷️ Sistema de Moeda Estudantil 👨‍💻
+# Sistema de Moeda Estudantil
 
-> [!NOTE]
-> Sistema acadêmico para reconhecimento por mérito estudantil com distribuição de moedas por professores, extrato, resgate de vantagens e notificações.
+> Sistema acadêmico para reconhecimento por mérito estudantil com distribuição de moedas por professores, resgate de vantagens com cupom e QR Code, e notificações por e-mail.
 
 <table>
 	<tr>
 		<td width="800px">
 			<div align="justify">
-				Este projeto foi desenvolvido para o Lab 03 da PUC Minas, consolidando as três sprints de desenvolvimento de software com foco em modelagem, implementação MVC e finalização técnica. A solução entrega um fluxo completo de moeda estudantil com persistência relacional, regras de negócio para distribuição e resgate, e rastreabilidade entre modelagem UML e código implementado.
+				Projeto desenvolvido para o Lab 04 da PUC Minas, evoluído ao longo de quatro sprints. A solução entrega um fluxo completo de moeda estudantil: autenticação por perfil (JWT), distribuição de moedas com justificativa, extrato com filtro por período, cadastro e listagem de vantagens por empresas parceiras, resgate com geração de cupom e QR Code, e notificações HTML por e-mail para todos os envolvidos.
 			</div>
 		</td>
 		<td>
@@ -24,281 +23,410 @@
 
 ---
 
-## 🚧 Status do Projeto
+## Status do Projeto
 
-[![Versão](https://img.shields.io/badge/Versão-v1.0.0-blue)](#)
-[![CI](https://github.com/Gabriel200481/Lab_03_projeto/actions/workflows/ci.yml/badge.svg)](https://github.com/Gabriel200481/Lab_03_projeto/actions/workflows/ci.yml)
-![Java](https://img.shields.io/badge/Java-25-007ec6?style=for-the-badge&logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.13-007ec6?style=for-the-badge&logo=springboot&logoColor=white)
+![Java](https://img.shields.io/badge/Java-21-007ec6?style=for-the-badge&logo=openjdk&logoColor=white)
+![Micronaut](https://img.shields.io/badge/Micronaut-4.10-007ec6?style=for-the-badge&logo=micronaut&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-17+-DD0031?style=for-the-badge&logo=angular&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-3.9+-007ec6?style=for-the-badge&logo=apachemaven&logoColor=white)
-![H2](https://img.shields.io/badge/H2-Database-007ec6?style=for-the-badge)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Produção-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 
-- Sprint 1 (Lab03S01): concluída
-- Sprint 2 (Lab03S02): concluída
-- Sprint 3 (Lab03S03): concluída
-- Sprint Final (Lab05 - Release 3): concluida
-
----
-
-## 📚 Índice
-- [Links Úteis](#-links-úteis)
-- [Sobre o Projeto](#-sobre-o-projeto)
-- [Funcionalidades Principais](#-funcionalidades-principais)
-- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-- [Arquitetura](#-arquitetura)
-- [Instalação e Execução](#-instalação-e-execução)
-- [Estrutura de Pastas](#-estrutura-de-pastas)
-- [Demonstração](#-demonstração)
-- [Testes](#-testes)
-- [Documentações utilizadas](#-documentações-utilizadas)
-- [Autores](#-autores)
-- [Contribuição](#-contribuição)
-- [Agradecimentos](#-agradecimentos)
-- [Licença](#-licença)
+| Sprint | Lab | Status |
+|---|---|---|
+| Sprint 1 | Lab03S01 | Concluída |
+| Sprint 2 | Lab03S02 | Concluída |
+| Sprint 3 | Lab03S03 | Concluída |
+| Sprint 4 / Release 3 | Lab04 | Concluída |
 
 ---
 
-## 🔗 Links Úteis
-* 🌐 **Demo Local:** http://localhost:8080/
-* 📖 **Documentação Sprint 1:** ./docs/sprint-1
-* 📖 **Documentação Sprint 2:** ./docs/sprint-2
-* 📖 **Documentação Sprint 3:** ./docs/sprint-3
-* 🧩 **Diagramas UML:** ./uml
+## Índice
+
+- [Links Úteis](#links-úteis)
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Funcionalidades Principais](#funcionalidades-principais)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Arquitetura](#arquitetura)
+- [Diagramas UML](#diagramas-uml)
+- [Histórias de Usuário](#histórias-de-usuário)
+- [Instalação e Execução](#instalação-e-execução)
+- [Estrutura de Pastas](#estrutura-de-pastas)
+- [Demonstração](#demonstração)
+- [Testes](#testes)
+- [Deploy](#deploy)
+- [Documentações Utilizadas](#documentações-utilizadas)
+- [Autores](#autores)
 
 ---
 
-## 📝 Sobre o Projeto
-O Sistema de Moeda Estudantil foi criado para permitir que professores reconheçam mérito acadêmico por meio de moedas virtuais distribuídas para alunos, que podem consultar extrato e resgatar vantagens oferecidas por empresas parceiras.
+## Links Úteis
 
-O projeto resolve o problema de falta de um mecanismo transparente de incentivo acadêmico, entregando rastreabilidade de transações, validações de saldo, justificativa obrigatória de envio e geração de código único no resgate.
-
-Contexto de uso: disciplina Laboratório de Desenvolvimento de Software (PUC Minas), com evolução incremental por sprints e alinhamento entre UML e implementação real.
-
----
-
-## ✨ Funcionalidades Principais
-
-- 🔐 **Autenticação:** login por perfil de usuário.
-- 👨‍🎓 **CRUD de Aluno:** cadastro, listagem, atualização e remoção.
-- 👨‍🏫 **Professor:** pré-cadastrado por importação institucional, com listagem e atualização de registros existentes.
-- 🏢 **CRUD de Empresa Parceira:** cadastro, listagem, atualização e remoção.
-- 🎁 **Cadastro de Vantagens:** empresa cadastra vantagens com descrição, foto e custo.
-- 💸 **Distribuição de Moedas:** professor envia moedas com validação de saldo e mensagem obrigatória.
-- 📊 **Extrato:** consulta de extrato para professor e aluno com total consolidado do periodo, saldo atual e historico (recebimentos e resgates no caso do aluno).
-- 🎟️ **Resgate de Vantagem:** débito automático de saldo e geração de código único.
-- 🧾 **Cupom com QR Code:** geração de QR Code por resgate com endpoint interno para validação visual.
-- 📨 **Notificações:** envio de e-mail ao aluno no recebimento de moedas e confirmações no resgate (via SMTP, com fallback seguro).
-- 📩 **Confirmação ao Professor:** envio de confirmação de distribuição de moedas para o professor.
-- 📆 **Recarga Semestral:** crédito acumulativo de +1000 moedas para professor.
+- **Backend local:** http://localhost:8080/api
+- **Frontend local:** http://localhost:4200/
+- **QR Codes:** http://localhost:8080/api/qrcodes/{arquivo}.png
+- **Docs Sprint 1:** [docs/sprint-1/README.md](docs/sprint-1/README.md)
+- **Docs Sprint 2:** [docs/sprint-2/README.md](docs/sprint-2/README.md)
+- **Docs Sprint 3:** [docs/sprint-3/README.md](docs/sprint-3/README.md)
+- **Docs Release 3:** [docs/release-3/](docs/release-3/)
+- **Diagramas UML:** [uml/](uml/)
 
 ---
 
-## 🛠 Tecnologias Utilizadas
+## Sobre o Projeto
 
-### 🖥️ Back-end
-* **Linguagem/Runtime:** Java 25
-* **Framework:** Spring Boot 3.5.13
-* **Banco de Dados:** H2 (memória)
-* **ORM:** Spring Data JPA / Hibernate
-* **Autenticação:** Spring Security + JWT (controle por perfil)
+O Sistema de Moeda Estudantil permite que professores reconheçam mérito acadêmico por meio de moedas virtuais distribuídas para alunos. Os alunos podem consultar seu extrato e resgatar vantagens oferecidas por empresas parceiras. Cada resgate gera um cupom com código único e QR Code, com notificações automáticas por e-mail para aluno e empresa.
 
-### 💻 Front-end
-* **Abordagem:** páginas estáticas HTML/CSS/JS para apoio de cadastro e demonstração
-
-### ⚙️ Infraestrutura & DevOps
-* **Build:** Maven
-* **Cloud:** Render (backend + banco) e Vercel (frontend estatico)
+Contexto: disciplina Laboratório de Desenvolvimento de Software (PUC Minas), com evolução incremental por sprints e rastreabilidade entre modelagem UML e implementação.
 
 ---
 
-## 🏗 Arquitetura
+## Funcionalidades Principais
 
-Arquitetura MVC com separação clara:
-- **Model:** entidades JPA e repositórios
-- **Controller:** endpoints REST por contexto de negócio
-- **Service:** regras de negócio, validações e transações
-
-### Exemplos de diagramas
-
-| Diagrama | Link |
-| :---: | :---: |
-| Casos de Uso | ./uml/casos-de-uso.puml |
-| Classes | ./uml/diagrama-classes.puml |
-| Componentes (MVC) | ./uml/diagrama-componentes.puml |
-| Modelo ER | ./uml/diagrama-er.puml |
+- **Autenticação por perfil:** login JWT para aluno, professor e empresa parceira.
+- **Cadastro de Aluno:** auto-cadastro com vínculo a instituição de ensino.
+- **Professor pré-cadastrado:** importado institucionalmente; distribui moedas com mensagem obrigatória.
+- **Cadastro de Empresa Parceira:** auto-cadastro com gestão de vantagens.
+- **Cadastro de Vantagens:** empresa registra benefícios com descrição, foto e custo em moedas.
+- **Listagem de Vantagens:** aluno consulta todas as empresas com suas vantagens disponíveis.
+- **Distribuição de Moedas:** professor envia moedas com validação de saldo e justificativa obrigatória.
+- **Extrato:** professor e aluno consultam histórico com filtro por período e resumo de saldo.
+- **Resgate de Vantagem:** débito automático do saldo do aluno e geração de código único.
+- **Cupom com QR Code:** QR Code gerado via ZXing e disponibilizado por URL pública.
+- **Notificações HTML por e-mail:** templates HTML por perfil enviados via Gmail SMTP com QR Code embutido inline.
+- **Recarga Semestral:** crédito acumulativo de +1000 moedas para professores.
 
 ---
 
-## 🔧 Instalação e Execução
+## Tecnologias Utilizadas
+
+### Back-end
+
+| Tecnologia | Versão | Uso |
+|---|---|---|
+| Java | 21 | Linguagem |
+| Micronaut | 4.10.12 | Framework web (Netty) |
+| Micronaut Security | - | JWT + autenticação por perfil |
+| Micronaut Data JPA | - | ORM / repositórios |
+| H2 | - | Banco em memória (desenvolvimento) |
+| PostgreSQL | - | Banco relacional (produção no Render) |
+| ZXing | 3.5.3 | Geração de QR Code (PNG) |
+| Spring Mail (angus-mail) | - | Envio de e-mail HTML com inline attachment |
+| Maven | 3.9+ | Build |
+
+### Front-end
+
+| Tecnologia | Versão | Uso |
+|---|---|---|
+| Angular | 17+ | Framework SPA (standalone components) |
+| TypeScript | 5+ | Linguagem |
+| Inter (Google Fonts) | - | Tipografia |
+| Node.js / npm | 18+ | Toolchain |
+
+### Infraestrutura
+
+| Serviço | Uso |
+|---|---|
+| Render | Backend Micronaut + PostgreSQL (produção) |
+| Vercel | Frontend Angular (produção) |
+
+---
+
+## Arquitetura
+
+Arquitetura em camadas com separação clara de responsabilidades:
+
+```
+Frontend (Angular SPA)
+        │  HTTP + JWT
+        ▼
+Controller (REST endpoints por contexto)
+        │
+Service (regras de negócio, validações, transações)
+        │
+Repository (Micronaut Data JPA)
+        │
+Model (entidades JPA)
+        │
+Database (H2 local / PostgreSQL produção)
+```
+
+Serviços transversais chamados pela camada Service:
+- **QrCodeService** — gera PNG via ZXing e retorna URL pública
+- **NotificacaoService** — envia e-mails HTML com QR Code inline via SMTP
+
+---
+
+## Diagramas UML
+
+Todos os diagramas estão na pasta [uml/](uml/) em formato PlantUML (`.puml`).
+
+| Diagrama | Arquivo |
+|---|---|
+| Casos de Uso | [uml/casos-de-uso.puml](uml/casos-de-uso.puml) |
+| Classes | [uml/diagrama-classes.puml](uml/diagrama-classes.puml) |
+| Entidade-Relacionamento | [uml/diagrama-er.puml](uml/diagrama-er.puml) |
+| Componentes (MVC) | [uml/diagrama-componentes.puml](uml/diagrama-componentes.puml) |
+| Implantação (deploy) | [uml/diagrama-implantacao.puml](uml/diagrama-implantacao.puml) |
+| Sequência Geral | [uml/sequencia-geral.puml](uml/sequencia-geral.puml) |
+| Sequência: Distribuição de Moedas | [uml/sequencia-distribuicao-moedas.puml](uml/sequencia-distribuicao-moedas.puml) |
+| Sequência: Cadastro e Listagem de Vantagens | [uml/sequencia-cadastro-vantagens.puml](uml/sequencia-cadastro-vantagens.puml) |
+| Sequência: Resgate de Vantagem | [uml/sequencia-resgate-vantagens.puml](uml/sequencia-resgate-vantagens.puml) |
+| Comunicação: Distribuição de Moedas | [uml/diagrama-comunicacao-distribuicao-moedas.puml](uml/diagrama-comunicacao-distribuicao-moedas.puml) |
+| Comunicação: Resgate e QR Code | [uml/diagrama-comunicacao-resgate-qrcode.puml](uml/diagrama-comunicacao-resgate-qrcode.puml) |
+
+---
+
+## Histórias de Usuário
+
+Definidas na Sprint 1 e implementadas ao longo das quatro sprints. Arquivo completo: [docs/sprint-1/README.md](docs/sprint-1/README.md).
+
+| ID | História |
+|---|---|
+| HU-01 | Cadastro de Aluno com vínculo institucional |
+| HU-02 | Acesso de professor pré-cadastrado pela instituição |
+| HU-03 | Cadastro de Empresa Parceira |
+| HU-04 | Autenticação por perfil com JWT |
+| HU-05 | Distribuição de moedas pelo professor com mensagem obrigatória e e-mail |
+| HU-06 | Consulta de extrato com filtro por período e resumo de saldo |
+| HU-07 | Cadastro e listagem de vantagens pela empresa |
+| HU-08 | Resgate de vantagem com cupom, QR Code e e-mail |
+| HU-09 | Recarga semestral acumulativa de saldo do professor |
+| HU-10 | Consulta de instituições de ensino disponíveis |
+| HU-11 | Health check público da aplicação |
+
+---
+
+## Instalação e Execução
 
 ### Pré-requisitos
-* Java JDK 25+
-* Maven 3.9+
 
-### 🔑 Variáveis de Ambiente
+- Java 21+
+- Maven 3.9+
+- Node.js 18+ e npm (para o frontend)
 
-Este projeto está configurado para execução local com H2 em memória pelo arquivo application.yml.
+### Variáveis de Ambiente
 
-Variáveis principais (valores de teste):
-- `MAIL_HOST=smtp.gmail.com`
-- `MAIL_PORT=587`
-- `MAIL_USERNAME=email.teste.lab03@gmail.com`
-- `MAIL_PASSWORD=senha-fake-lab03-123`
-- `MAIL_FAIL_ON_ERROR=false`
-- `JWT_SECRET=Lab03JwtSecretKeyMuitoSeguraCom32CaracteresMinimo123`
+O projeto usa H2 em memória localmente. Para o envio de e-mail, configure as variáveis no arquivo `.env` na raiz (ou nas variáveis de ambiente do sistema):
 
-### 📦 Instalação de Dependências
-
-```bash
-git clone https://github.com/Gabriel200481/Lab_03_projeto.git
-cd Lab_03_projeto
-mvn clean install
+```env
+MAIL_USERNAME=seu-email@gmail.com
+MAIL_PASSWORD=sua-senha-de-app-gmail
 ```
 
-### ⚡ Como Executar a Aplicação
+Variáveis opcionais com valores padrão:
 
-```bash
-mvn spring-boot:run
+```env
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_FAIL_ON_ERROR=false
+JWT_SECRET=Lab03JwtSecretKeyMuitoSeguraCom32CaracteresMinimo123
+APP_QRCODE_BASEPATH=qrcodes/
+APP_QRCODE_BASEURL=http://localhost:8080/api/qrcodes/
 ```
 
-Aplicação e API:
-- Home: http://localhost:8080/
-- API: http://localhost:8080/api
-- QR Codes: http://localhost:8080/api/qrcodes/{arquivo}.png
-- H2 Console: http://localhost:8080/h2-console
-- JDBC URL: jdbc:h2:mem:moedaestudantil
+> A senha do Gmail deve ser uma **App Password** gerada em [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords), não a senha da conta.
+
+### Executar o Back-end
+
+```bash
+cd backend
+mvn clean package -DskipTests
+mvn mn:run
+```
+
+API disponível em: `http://localhost:8080/api`
+
+### Executar o Front-end
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Frontend disponível em: `http://localhost:4200`
 
 ---
 
-## 🚀 Deploy
-
-Build do projeto:
-
-```bash
-mvn clean package
-```
-
-Execução via JAR:
-
-```bash
-java -jar target/moeda-estudantil-0.0.1-SNAPSHOT.jar
-```
-
-Deploy para Release 3:
-- Front-end: Vercel (configurado em `vercel.json` com output em `src/main/resources/static`)
-- Back-end e banco: Render + PostgreSQL (arquivo `render.yaml` e perfil `application-prod.yml`)
-
-Artefatos operacionais:
-- Script de deploy frontend: `scripts/deploy_frontend_vercel.cmd`
-- Script de validacao local: `scripts/validar_release.cmd`
-- Checklist de deploy e evidencias: `docs/release-3/deploy-checklist.md` e `docs/release-3/evidencias-execucao.md`
-
----
-
-## 📂 Estrutura de Pastas
+## Estrutura de Pastas
 
 ```text
 .
+├── backend/                          # Aplicação Micronaut (Java 21)
+│   ├── src/main/java/br/com/moedaestudantil/
+│   │   ├── config/                   # Configurações (mail, senha, seed)
+│   │   ├── controller/               # Endpoints REST (11 controllers)
+│   │   ├── dto/                      # Objetos de transferência de dados
+│   │   ├── exception/                # Exceções customizadas e handlers
+│   │   ├── model/                    # Entidades JPA (10 entidades)
+│   │   ├── repository/               # Repositórios Micronaut Data
+│   │   ├── security/                 # JWT e usuário autenticado
+│   │   └── service/                  # Regras de negócio (11 serviços)
+│   ├── src/main/resources/
+│   │   ├── application.yml           # Configuração local (H2)
+│   │   ├── application-prod.yml      # Configuração produção (PostgreSQL)
+│   │   └── data.sql                  # Dados iniciais (professores, instituições)
+│   ├── render.yaml                   # Configuração de deploy no Render
+│   └── pom.xml
+│
+├── frontend/                         # Aplicação Angular 17+
+│   └── src/app/
+│       ├── pages/                    # Componentes de página (6 páginas)
+│       │   ├── login/
+│       │   ├── cadastro-aluno/
+│       │   ├── cadastro-empresa/
+│       │   ├── aluno-dashboard/
+│       │   ├── professor-dashboard/
+│       │   └── empresa-dashboard/
+│       ├── services/                 # api.service.ts, auth.service.ts
+│       ├── guards/                   # auth.guard.ts
+│       ├── interceptors/             # auth.interceptor.ts (JWT)
+│       └── models/                   # usuario.model.ts
+│
+├── uml/                              # Diagramas PlantUML (11 arquivos)
 ├── docs/
-│   ├── sprint-1/
-│   ├── sprint-2/
-│   └── sprint-3/
-├── src/
-│   ├── main/java/br/com/moedaestudantil/
-│   │   ├── config/
-│   │   ├── controller/
-│   │   ├── dto/
-│   │   ├── exception/
-│   │   ├── model/
-│   │   ├── repository/
-│   │   └── service/
-│   └── main/resources/
-│       ├── static/
-│       ├── application.yml
-│       └── data.sql
-└── uml/
+│   ├── sprint-1/                     # Histórias de usuário (HU-01 a HU-11)
+│   ├── sprint-2/                     # Modelo ER, persistência JPA
+│   ├── sprint-3/                     # MVC finalizado, guia de demo
+│   └── release-3/                    # Checklist de deploy e evidências
+├── scripts/                          # Scripts de teste E2E e deploy
+├── vercel.json                       # Configuração de deploy do frontend
+└── README.md
 ```
 
 ---
 
-## 🎥 Demonstração
+## Demonstração
 
-### 🌐 Aplicação Web
+### Fluxo sugerido
 
-Fluxo sugerido para demo:
-1. Cadastrar aluno e empresa
-2. Cadastrar vantagem para empresa
-3. Distribuir moedas para aluno
-4. Consultar extratos
-5. Resgatar vantagem
-6. Aplicar recarga semestral
+1. Acessar o frontend em `http://localhost:4200`
+2. Cadastrar um aluno (aba "Cadastro de Aluno")
+3. Cadastrar uma empresa parceira (aba "Cadastro de Empresa")
+4. Fazer login como empresa e cadastrar uma vantagem
+5. Fazer login como professor e distribuir moedas para o aluno
+6. Fazer login como aluno, consultar extrato e resgatar uma vantagem
+7. Verificar e-mails enviados ao aluno e à empresa com cupom e QR Code
 
-Arquivo de apoio para chamadas HTTP:
-- ./docs/sprint-3/guia-demo.http
+### Endpoints principais
+
+| Método | Endpoint | Descrição |
+|---|---|---|
+| POST | `/api/auth/login` | Autenticação (retorna JWT) |
+| POST | `/api/alunos` | Cadastro de aluno |
+| POST | `/api/empresas` | Cadastro de empresa |
+| POST | `/api/empresas/{id}/vantagens` | Cadastro de vantagem |
+| GET | `/api/empresas` | Listar empresas com vantagens |
+| POST | `/api/transacoes/distribuicao` | Distribuir moedas |
+| GET | `/api/extratos/alunos/{id}/resumo` | Extrato do aluno |
+| GET | `/api/extratos/professores/{id}/resumo` | Extrato do professor |
+| POST | `/api/resgates` | Resgatar vantagem (gera cupom + QR Code) |
+| GET | `/api/qrcodes/{arquivo}.png` | Visualizar QR Code gerado |
+| POST | `/api/saldo-semestral/recarregar` | Recarga semestral de professores |
+
+Arquivo de apoio para chamadas HTTP: [docs/sprint-3/guia-demo.http](docs/sprint-3/guia-demo.http)
 
 ---
 
-## 🧪 Testes
+## Testes
 
-Testes unitários adicionados:
-- `TransacaoServiceTest`: valida regras de distribuição de moedas.
-- `JwtServiceTest`: valida emissão e leitura de claims do token JWT.
+### Testes unitários
 
-Testes E2E automatizados adicionados:
-- `scripts/e2e_release3_test.py`: fluxo completo (login, cadastro de vantagem, distribuição, extrato, resgate e validação do QR Code).
-- `scripts/e2e_negative_tests.py`: cenários de erro esperados (saldo insuficiente e distribuição sem mensagem).
-
-Validação final executada em 18/04/2026:
-- `mvn test` -> todos os testes automatizados passaram.
-- E2E positivo -> concluído com sucesso (QR Code retornando HTTP 200).
-- E2E negativo -> concluído com sucesso (HTTP 400 para regras inválidas).
-
-Execução dos testes:
+- `TransacaoServiceTest` — valida regras de distribuição de moedas.
+- `JwtServiceTest` — valida emissão e leitura de claims do token JWT.
 
 ```bash
+cd backend
 mvn test
 ```
 
+### Testes E2E automatizados
+
+- `scripts/e2e_release3_test.py` — fluxo completo: login, cadastro de vantagem, distribuição, extrato, resgate e validação do QR Code.
+- `scripts/e2e_negative_tests.py` — cenários de erro: saldo insuficiente e distribuição sem mensagem.
+
+```bash
+python scripts/e2e_release3_test.py
+python scripts/e2e_negative_tests.py
+```
+
 ---
 
-## 🔗 Documentações utilizadas
+## Deploy
 
-* Spring Boot: https://docs.spring.io/spring-boot/docs/current/reference/html/
-* Spring Data JPA: https://docs.spring.io/spring-data/jpa/reference/
-* Spring Security: https://docs.spring.io/spring-security/reference/
-* H2 Database: https://www.h2database.com/html/main.html
-* PlantUML: https://plantuml.com/
+### Back-end — Render
+
+Configurado em [backend/render.yaml](backend/render.yaml). O Render executa o JAR Micronaut com PostgreSQL como banco de dados de produção.
+
+Variáveis obrigatórias no painel do Render:
+
+```
+DATABASE_URL=jdbc:postgresql://...
+DATABASE_USERNAME=...
+DATABASE_PASSWORD=...
+MAIL_USERNAME=...
+MAIL_PASSWORD=...
+JWT_SECRET=...
+APP_QRCODE_BASEURL=https://seu-backend.onrender.com/api/qrcodes/
+```
+
+Build:
+
+```bash
+cd backend
+mvn clean package -DskipTests
+java -jar target/moeda-estudantil-micronaut-0.0.1-SNAPSHOT.jar
+```
+
+### Front-end — Vercel
+
+Configurado em [vercel.json](vercel.json). O Vercel serve o build estático do Angular.
+
+Build:
+
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+Scripts auxiliares:
+- `scripts/deploy_frontend_vercel.cmd` — deploy automatizado do frontend
+- `scripts/validar_release.cmd` — validação local antes do deploy
+- [docs/release-3/deploy-checklist.md](docs/release-3/deploy-checklist.md) — checklist completo de release
 
 ---
 
-## 👥 Autores
+## Documentações Utilizadas
 
-| 👤 Nome | GitHub | LinkedIn | Gmail |
+- Micronaut: https://docs.micronaut.io/latest/guide/
+- Micronaut Security (JWT): https://micronaut-projects.github.io/micronaut-security/latest/guide/
+- Micronaut Data JPA: https://micronaut-projects.github.io/micronaut-data/latest/guide/
+- ZXing (QR Code): https://github.com/zxing/zxing
+- Angular: https://angular.dev/
+- PlantUML: https://plantuml.com/
+- H2 Database: https://www.h2database.com/html/main.html
+
+---
+
+## Autores
+
+| Nome | GitHub | LinkedIn | E-mail |
 |---|---|---|---|
-| Gabriel Afonso Infante Vieira | https://github.com/Gabriel200481 | https://www.linkedin.com/in/gabrielvieira2004/ | mailto:gabrielvieira200481@gmail.com |
-| Thales Eduardo | https://github.com/ThalesMattos | https://www.linkedin.com/in/thalesedu/ | mailto:thalescarvalho622@gmail.com |
+| Gabriel Afonso Infante Vieira | [Gabriel200481](https://github.com/Gabriel200481) | [gabrielvieira2004](https://www.linkedin.com/in/gabrielvieira2004/) | gabrielvieira200481@gmail.com |
+| Thales Eduardo | [ThalesMattos](https://github.com/ThalesMattos) | [thalesedu](https://www.linkedin.com/in/thalesedu/) | thalescarvalho622@gmail.com |
 
 ---
 
-## 🤝 Contribuição
+## Agradecimentos
 
-1. Faça um fork do projeto.
-2. Crie uma branch para sua feature.
-3. Commit suas mudanças com Conventional Commits.
-4. Faça push para a branch.
-5. Abra um Pull Request.
+- Engenharia de Software — PUC Minas
+- Prof. Dr. João Paulo Aramuni
+- Comunidade de desenvolvimento e boas práticas em arquitetura de software
 
 ---
 
-## 🙏 Agradecimentos
-
-* Engenharia de Software PUC Minas
-* Prof. Dr. João Paulo Aramuni
-* Comunidade de desenvolvimento e boas práticas em arquitetura de software
-
----
-
-## 📄 Licença
+## Licença
 
 Este projeto é distribuído sob a Licença MIT.
 
