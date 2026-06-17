@@ -61,6 +61,8 @@
 
 ## Links Úteis
 
+- **Frontend (produção):** https://lab-final-projeto-de-software.vercel.app
+- **Backend (produção):** https://lab-final-projeto-de-software.onrender.com/api
 - **Backend local:** http://localhost:8080/api
 - **Frontend local:** http://localhost:4200/
 - **QR Codes:** http://localhost:8080/api/qrcodes/{arquivo}.png
@@ -300,7 +302,7 @@ Frontend disponível em: `http://localhost:4200`
 
 ### Fluxo sugerido
 
-1. Acessar o frontend em `http://localhost:4200`
+1. Acessar o frontend em https://lab-final-projeto-de-software.vercel.app (produção) ou `http://localhost:4200` (local)
 2. Cadastrar um aluno (aba "Cadastro de Aluno")
 3. Cadastrar uma empresa parceira (aba "Cadastro de Empresa")
 4. Fazer login como empresa e cadastrar uma vantagem
@@ -354,46 +356,39 @@ python scripts/e2e_negative_tests.py
 
 ## Deploy
 
+| Componente | Plataforma | URL |
+|---|---|---|
+| Frontend (Angular) | Vercel | https://lab-final-projeto-de-software.vercel.app |
+| Backend (Micronaut) | Render | https://lab-final-projeto-de-software.onrender.com |
+
 ### Back-end — Render
 
-Configurado em [backend/render.yaml](backend/render.yaml). O Render executa o JAR Micronaut com PostgreSQL como banco de dados de produção.
+Configurado em [render.yaml](render.yaml). O deploy é automático a cada push na `main`.
 
-Variáveis obrigatórias no painel do Render:
+O backend usa **H2 em memória** por padrão. Para usar PostgreSQL em produção, configure a variável `DATASOURCES_DEFAULT_URL` no painel do Render.
+
+Variáveis opcionais no painel do Render:
 
 ```
-DATABASE_URL=jdbc:postgresql://...
-DATABASE_USERNAME=...
-DATABASE_PASSWORD=...
-MAIL_USERNAME=...
-MAIL_PASSWORD=...
-JWT_SECRET=...
-APP_QRCODE_BASEURL=https://seu-backend.onrender.com/api/qrcodes/
+JWT_SECRET=...                         # secret JWT (tem valor padrão)
+MAIL_USERNAME=...                      # Gmail para envio de notificações
+MAIL_PASSWORD=...                      # App Password do Gmail
+APP_QRCODE_BASEURL=https://lab-final-projeto-de-software.onrender.com/api/qrcodes/
 ```
 
-Build:
-
-```bash
-cd backend
-mvn clean package -DskipTests
-java -jar target/moeda-estudantil-micronaut-0.0.1-SNAPSHOT.jar
-```
+> **Atenção (plano free):** o Render hiberna o serviço após 15 min de inatividade. O primeiro acesso pode demorar ~30 segundos para "acordar".
 
 ### Front-end — Vercel
 
-Configurado em [vercel.json](vercel.json). O Vercel serve o build estático do Angular.
+Configurado em [vercel.json](vercel.json). O deploy é automático a cada push na `main`. As chamadas `/api/*` são proxiadas automaticamente para o backend no Render.
 
-Build:
+### Contas de demonstração (seed)
 
-```bash
-cd frontend
-npm install
-npm run build
-```
-
-Scripts auxiliares:
-- `scripts/deploy_frontend_vercel.cmd` — deploy automatizado do frontend
-- `scripts/validar_release.cmd` — validação local antes do deploy
-- [docs/release-3/deploy-checklist.md](docs/release-3/deploy-checklist.md) — checklist completo de release
+| Perfil | E-mail | Senha |
+|---|---|---|
+| Professor | `professor.seed@lab03.com` | `password` |
+| Aluno | `gabrielvieira200481@gmail.com` | `password` |
+| Empresa | `thalescarvalho622@gmail.com` | `password` |
 
 ---
 
