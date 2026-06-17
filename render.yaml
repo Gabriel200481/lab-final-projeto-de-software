@@ -3,9 +3,8 @@ services:
     name: moeda-estudantil-api
     runtime: java
     plan: free
-    rootDir: backend
-    buildCommand: "mvn -DskipTests clean package"
-    startCommand: "java -Dmicronaut.environments=prod -jar target/moeda-estudantil-micronaut-0.0.1-SNAPSHOT.jar"
+    buildCommand: "cd backend && mvn -DskipTests clean package"
+    startCommand: "java -Dmicronaut.environments=prod -jar backend/target/moeda-estudantil-micronaut-0.0.1-SNAPSHOT.jar"
     envVars:
       - key: JAVA_VERSION
         value: 21
