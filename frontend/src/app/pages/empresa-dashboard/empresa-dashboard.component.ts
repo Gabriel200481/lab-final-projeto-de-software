@@ -11,322 +11,368 @@ import { VantagemResponse } from '../../models/usuario.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="dashboard">
+    <div class="shell">
 
-      <!-- Header -->
-      <header class="header">
-        <div class="header-inner">
-          <div class="header-left">
-            <div class="header-icon">E</div>
-            <div>
-              <h1>Painel da Empresa</h1>
-              <p>Bem-vindo, {{ userName }}</p>
-            </div>
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="brand">
+          <div class="coin-logo">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+              <circle cx="12" cy="12" r="10" fill="#0D0B06" stroke="#F5C842" stroke-width="1.5"/>
+              <text x="12" y="16" text-anchor="middle" font-size="9" font-weight="900" fill="#F5C842" font-family="sans-serif">$</text>
+            </svg>
           </div>
-          <div class="header-right">
-            <button class="btn-logout" (click)="logout()">Sair</button>
+          <span class="brand-text">STUDENT PERKS <span>🎓</span></span>
+        </div>
+        <div class="topbar-right">
+          <div class="avatar">{{ userName.charAt(0) }}</div>
+          <div class="user-info">
+            <span class="user-name">{{ userName }}</span>
+            <span class="user-role">Empresa Parceira</span>
           </div>
+          <button class="btn-logout" (click)="logout()">Sair</button>
         </div>
       </header>
 
-      <!-- Tabs -->
-      <div class="content-area">
-        <div class="tabs">
-          <button [class.active]="tab==='vantagens'" (click)="tab='vantagens'">Minhas Vantagens</button>
-          <button [class.active]="tab==='cadastrar'" (click)="tab='cadastrar'">Cadastrar Vantagem</button>
-        </div>
+      <div class="body-row">
 
-        <!-- Tab: Minhas Vantagens -->
-        <div class="tab-content" *ngIf="tab==='vantagens'">
-          <div class="card">
-            <h2>Vantagens Cadastradas</h2>
-            <p class="card-subtitle">Gerencie as vantagens oferecidas aos alunos</p>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+          <button class="nav-item" [class.active]="tab==='vantagens'" (click)="tab='vantagens'" title="Home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span>Home</span>
+          </button>
+          <button class="nav-item" [class.active]="tab==='vantagens'" (click)="tab='vantagens'" title="Vantagens">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            <span>Vantagens</span>
+          </button>
+          <button class="nav-item" [class.active]="tab==='cadastrar'" (click)="tab='cadastrar'" title="Cadastrar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            <span>Cadastrar</span>
+          </button>
+          <button class="nav-item" [class.active]="tab==='resgates'" (click)="tab='resgates'; carregarResgates()" title="Resgates">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 11 12 14 22 4"/>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+            <span>Resgates</span>
+          </button>
+        </aside>
 
-            <div *ngIf="vantagens.length === 0" class="empty-state">
-              Nenhuma vantagem cadastrada ainda.
+        <!-- MAIN -->
+        <main class="main">
+
+          <!-- TABS -->
+          <div class="tabs">
+            <button [class.active]="tab==='vantagens'" (click)="tab='vantagens'">Minhas Vantagens</button>
+            <button [class.active]="tab==='cadastrar'" (click)="tab='cadastrar'">Cadastrar Vantagem</button>
+            <button [class.active]="tab==='resgates'"  (click)="tab='resgates'; carregarResgates()">Resgates</button>
+          </div>
+
+          <!-- ── VANTAGENS ── -->
+          <div *ngIf="tab==='vantagens'">
+            <div class="card-header-row">
+              <p class="section-title">Vantagens Cadastradas</p>
+              <button class="btn-gold-sm" (click)="tab='cadastrar'">+ Nova Vantagem</button>
             </div>
 
-            <div class="vantagens-grid" *ngIf="vantagens.length > 0">
-              <div class="vantagem-card" *ngFor="let v of vantagens">
-                <div class="vantagem-img" *ngIf="v.fotoUrl">
-                  <img [src]="v.fotoUrl" [alt]="v.descricao" loading="lazy">
-                </div>
-                <div class="vantagem-img vantagem-placeholder" *ngIf="!v.fotoUrl">
-                  <span>Sem foto</span>
-                </div>
-                <div class="vantagem-info">
-                  <h3>{{ v.descricao }}</h3>
-                  <div class="vantagem-custo">
-                    <span class="custo-icon">$</span>
-                    <span>{{ v.custoMoedas }} MC</span>
-                  </div>
+            <div *ngIf="vantagens.length === 0" class="empty-state">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <p>Nenhuma vantagem cadastrada ainda.</p>
+              <button class="btn-gold" (click)="tab='cadastrar'">Cadastrar primeira vantagem</button>
+            </div>
+
+            <div class="vant-grid" *ngIf="vantagens.length > 0">
+              <div class="vant-card" *ngFor="let v of vantagens">
+                <div class="vant-badge">{{ v.custoMoedas | number:'1.0-0' }} MC</div>
+                <p class="vant-desc">{{ v.descricao }}</p>
+                <div class="vant-footer">
+                  <span [class.vant-ativa]="v.ativa" [class.vant-inativa]="!v.ativa">{{ v.ativa ? 'Ativa' : 'Inativa' }}</span>
+                  <span class="vant-foto" *ngIf="v.fotoUrl">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg> Foto
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Tab: Cadastrar Vantagem -->
-        <div class="tab-content" *ngIf="tab==='cadastrar'">
-          <div class="card">
-            <h2>Nova Vantagem</h2>
-            <p class="card-subtitle">Cadastre um beneficio para os alunos resgatarem</p>
+          <!-- ── CADASTRAR ── -->
+          <div *ngIf="tab==='cadastrar'">
+            <div class="card">
+              <p class="card-title">Nova Vantagem</p>
+              <p class="card-sub">Crie uma vantagem para atrair alunos parceiros</p>
 
-            <div *ngIf="cadErro" class="alert alert-danger">{{ cadErro }}</div>
-            <div *ngIf="cadSucesso" class="alert alert-success">{{ cadSucesso }}</div>
+              <div *ngIf="novErro"    class="alert alert-err">{{ novErro }}</div>
+              <div *ngIf="novSucesso" class="alert alert-ok">{{ novSucesso }}</div>
 
-            <div class="form-group">
-              <label>Descricao</label>
-              <input type="text" [(ngModel)]="cadDescricao" placeholder="Ex: Desconto de 15% em pizzas">
+              <div class="fg">
+                <label>Descrição da Vantagem</label>
+                <textarea [(ngModel)]="novDescricao" rows="3" placeholder="Ex: 15% de desconto em produtos selecionados"></textarea>
+              </div>
+              <div class="row-2">
+                <div class="fg">
+                  <label>Custo em Moedas</label>
+                  <input type="number" [(ngModel)]="novCustoMoedas" placeholder="Ex: 100" min="1">
+                </div>
+                <div class="fg">
+                  <label>URL da Foto (opcional)</label>
+                  <input [(ngModel)]="novFotoUrl" placeholder="https://...">
+                </div>
+              </div>
+              <button class="btn-gold" (click)="cadastrarVantagem()" [disabled]="novLoading">
+                {{ novLoading ? 'Cadastrando...' : 'Cadastrar Vantagem' }}
+              </button>
             </div>
-
-            <div class="form-group">
-              <label>URL da Foto</label>
-              <input type="text" [(ngModel)]="cadFotoUrl" placeholder="https://exemplo.com/foto.jpg">
-            </div>
-
-            <div class="form-group">
-              <label>Custo em Moedas</label>
-              <input type="number" [(ngModel)]="cadCusto" placeholder="Ex: 50" min="1">
-            </div>
-
-            <button class="btn-primary" (click)="cadastrarVantagem()" [disabled]="cadLoading">
-              {{ cadLoading ? 'Salvando...' : 'Cadastrar Vantagem' }}
-            </button>
           </div>
-        </div>
 
+          <!-- ── RESGATES ── -->
+          <div *ngIf="tab==='resgates'">
+            <p class="section-title" style="margin-bottom:0.85rem">Resgates de Alunos</p>
+
+            <p *ngIf="resgates.length === 0" class="empty">Nenhum resgate encontrado.</p>
+
+            <div class="data-wrap" *ngIf="resgates.length > 0">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Aluno</th><th>Vantagem</th><th>Valor</th><th>Data</th><th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of resgates">
+                    <td>{{ r.alunoNome || '—' }}</td>
+                    <td>{{ r.vantagemNome || '—' }}</td>
+                    <td class="val-badge">{{ r.valor | number:'1.0-0' }} MC</td>
+                    <td>{{ r.dataResgate | date:'dd/MM/yyyy' }}</td>
+                    <td><span class="status-chip">{{ r.status || 'Pendente' }}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </main>
       </div>
     </div>
   `,
   styles: [`
-    .dashboard { min-height: 100vh; background: #F1F5F9; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :host { display: block; }
 
-    /* ── Header ── */
-    .header {
-      background: #7C3AED;
-      color: #fff;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 1px 0 rgba(0,0,0,0.1), 0 4px 16px rgba(124,58,237,0.25);
+    .shell {
+      min-height: 100vh; background: #0D0B06; color: #F0EDE5;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex; flex-direction: column;
     }
 
-    .header-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 0 1.75rem;
-      height: 64px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* TOPBAR */
+    .topbar {
+      height: 58px; background: #131108; border-bottom: 1px solid #2A2618;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem; flex-shrink: 0;
     }
+    .brand { display: flex; align-items: center; gap: 0.65rem; }
+    .coin-logo {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 14px rgba(245,200,66,0.35);
+    }
+    .brand-text { font-size: 0.9rem; font-weight: 800; color: #F5C842; letter-spacing: 1.5px; text-transform: uppercase; }
 
-    .header-left { display: flex; align-items: center; gap: 0.85rem; }
-
-    .header-icon {
-      width: 40px; height: 40px;
-      border-radius: 11px;
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.2);
+    .topbar-right { display: flex; align-items: center; gap: 0.6rem; }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
       display: flex; align-items: center; justify-content: center;
-      font-weight: 900; font-size: 1.2rem;
+      font-weight: 800; font-size: 0.9rem; color: #0D0B06; border: 2px solid #2A2618;
     }
-
-    .header-left h1 { font-size: 1.05rem; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
-    .header-left p { font-size: 0.78rem; opacity: 0.75; margin: 0.1rem 0 0; }
-
-    .header-right { display: flex; align-items: center; }
+    .user-info { display: flex; flex-direction: column; line-height: 1.2; }
+    .user-name { font-size: 0.82rem; font-weight: 600; color: #F0EDE5; }
+    .user-role { font-size: 0.68rem; color: #7A7260; }
 
     .btn-logout {
-      background: rgba(255,255,255,0.12);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.25);
-      padding: 0.4rem 0.95rem;
-      border-radius: 8px;
-      font-size: 0.83rem;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.15s;
+      padding: 0.3rem 0.8rem;
+      background: rgba(239,68,68,0.08); color: #EF4444;
+      border: 1px solid rgba(239,68,68,0.2); border-radius: 7px;
+      font-size: 0.73rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all 0.15s;
     }
-    .btn-logout:hover { background: rgba(255,255,255,0.22); }
+    .btn-logout:hover { background: rgba(239,68,68,0.18); }
 
-    /* ── Content ── */
-    .content-area { max-width: 1120px; margin: 0 auto; padding: 1.75rem; }
+    /* BODY */
+    .body-row { display: flex; flex: 1; overflow: hidden; }
 
-    /* ── Tabs ── */
-    .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 1.5rem;
-      background: #fff;
-      padding: 4px;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    /* SIDEBAR */
+    .sidebar {
+      width: 78px; background: #131108; border-right: 1px solid #2A2618;
+      display: flex; flex-direction: column; align-items: center;
+      padding-top: 1.25rem; gap: 0.15rem; flex-shrink: 0;
     }
+    .nav-item {
+      width: 100%; display: flex; flex-direction: column; align-items: center;
+      gap: 0.28rem; padding: 0.7rem 0; background: none; border: none;
+      border-left: 3px solid transparent; cursor: pointer;
+      color: #4A4434; font-size: 0.6rem; font-family: inherit; font-weight: 500;
+      letter-spacing: 0.3px; transition: all 0.15s;
+    }
+    .nav-item:hover { color: #C8961E; background: rgba(200,150,30,0.04); }
+    .nav-item.active { color: #F5C842; border-left-color: #F5C842; background: rgba(245,200,66,0.06); }
+    .nav-item svg { width: 20px; height: 20px; }
 
+    /* MAIN */
+    .main { flex: 1; padding: 1.5rem 1.75rem; overflow-y: auto; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
     .tabs button {
-      flex: 1;
-      padding: 0.65rem 1rem;
-      background: transparent;
-      border: none;
-      border-radius: 9px;
-      font-weight: 600;
-      font-size: 0.875rem;
-      font-family: inherit;
-      cursor: pointer;
-      color: #64748B;
-      transition: all 0.15s;
+      flex: 1; padding: 0.6rem 0.75rem; background: transparent;
+      border: 1.5px solid #2A2618; border-radius: 7px;
+      color: #4A4434; font-size: 0.72rem; font-weight: 700; font-family: inherit;
+      letter-spacing: 0.6px; text-transform: uppercase; cursor: pointer; transition: all 0.15s;
     }
-    .tabs button.active { background: #7C3AED; color: #fff; box-shadow: 0 1px 3px rgba(124,58,237,0.35); }
-    .tabs button:not(.active):hover { background: #F8FAFC; color: #7C3AED; }
+    .tabs button:hover:not(.active) { border-color: #5A5244; color: #9A8860; }
+    .tabs button.active {
+      border-color: #C8961E; color: #F5C842;
+      background: rgba(200,150,30,0.06); box-shadow: 0 0 14px rgba(200,150,30,0.1);
+    }
 
-    /* ── Card ── */
+    /* SECTION HEADER */
+    .card-header-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .section-title { font-size: 0.9rem; font-weight: 700; color: #F0EDE5; }
+
+    /* CARD */
     .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+      background: #1A1810; border: 1px solid #2A2618;
+      border-radius: 12px; padding: 1.75rem;
+    }
+    .card-title { font-size: 1rem; font-weight: 700; color: #F5C842; margin-bottom: 0.25rem; }
+    .card-sub   { font-size: 0.8rem; color: #7A7260; margin-bottom: 1.5rem; }
+
+    /* FORM */
+    .fg { margin-bottom: 1rem; }
+    .fg label {
+      display: block; margin-bottom: 0.35rem;
+      font-size: 0.75rem; font-weight: 600; color: #7A7260; letter-spacing: 0.3px;
+    }
+    .fg input, .fg textarea {
+      width: 100%; padding: 0.7rem 0.9rem;
+      background: #0D0B06; border: 1px solid #3A3220; border-radius: 8px;
+      font-size: 0.88rem; font-family: inherit; color: #F0EDE5;
+      outline: none; transition: border-color 0.15s, box-shadow 0.15s; box-sizing: border-box;
+    }
+    .fg input:focus, .fg textarea:focus { border-color: #C8961E; box-shadow: 0 0 0 3px rgba(200,150,30,0.1); }
+    .fg input::placeholder, .fg textarea::placeholder { color: #4A4434; }
+    .fg textarea { resize: vertical; min-height: 80px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
+
+    /* BUTTONS */
+    .btn-gold {
+      padding: 0.78rem 2rem;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06; border: none; border-radius: 9px;
+      font-size: 0.9rem; font-weight: 800; font-family: inherit;
+      cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+      box-shadow: 0 4px 16px rgba(200,150,30,0.28);
+    }
+    .btn-gold:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .btn-gold:disabled { background: #2A2618; color: #5A5244; cursor: not-allowed; box-shadow: none; }
+
+    .btn-gold-sm {
+      padding: 0.4rem 1rem;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06; border: none; border-radius: 7px;
+      font-size: 0.75rem; font-weight: 800; font-family: inherit;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn-gold-sm:hover { opacity: 0.85; }
+
+    /* VANT GRID */
+    .vant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.85rem; }
+    .vant-card {
+      background: #1A1810; border: 1px solid #2A2618; border-radius: 10px;
+      padding: 1.1rem; position: relative; transition: border-color 0.15s;
+    }
+    .vant-card:hover { border-color: #3A3220; }
+    .vant-badge {
+      display: inline-block; background: rgba(200,150,30,0.12);
+      color: #F5C842; border: 1px solid rgba(200,150,30,0.25);
+      border-radius: 20px; padding: 0.2rem 0.65rem;
+      font-size: 0.72rem; font-weight: 800; margin-bottom: 0.6rem;
+    }
+    .vant-nome { font-size: 0.88rem; font-weight: 700; color: #F0EDE5; margin-bottom: 0.35rem; }
+    .vant-desc { font-size: 0.78rem; color: #7A7260; line-height: 1.5; margin-bottom: 0.75rem; }
+    .vant-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .vant-ativa   { font-size: 0.7rem; color: #22C55E; font-weight: 600; }
+    .vant-inativa { font-size: 0.7rem; color: #EF4444; font-weight: 600; }
+    .vant-foto { display: flex; align-items: center; gap: 0.25rem; font-size: 0.7rem; color: #5A5244; }
+
+    /* TABLE */
+    .data-wrap { background: #1A1810; border: 1px solid #2A2618; border-radius: 12px; overflow: hidden; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th {
+      padding: 0.65rem 1rem; text-align: left; font-size: 0.65rem; font-weight: 700;
+      color: #C8961E; letter-spacing: 0.9px; text-transform: uppercase;
+      border-bottom: 1px solid #2A2618;
+    }
+    .data-table td { padding: 0.8rem 1rem; font-size: 0.8rem; color: #B0A890; border-bottom: 1px solid #1E1C12; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: rgba(255,255,255,0.015); }
+    .val-badge { color: #F5C842; font-weight: 700; }
+    .status-chip {
+      display: inline-block; padding: 0.2rem 0.55rem; border-radius: 20px;
+      font-size: 0.7rem; font-weight: 600;
+      background: rgba(59,130,246,0.1); color: #3B82F6; border: 1px solid rgba(59,130,246,0.2);
     }
 
-    .card h2 { font-size: 1.1rem; font-weight: 700; color: #0F172A; margin: 0 0 0.25rem; }
-    .card-subtitle { color: #64748B; font-size: 0.875rem; margin-bottom: 1.5rem; }
-
-    /* ── Vantagens grid ── */
-    .vantagens-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.1rem;
+    /* EMPTY */
+    .empty-state {
+      text-align: center; padding: 3rem; color: #4A4434;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
     }
+    .empty-state svg { width: 48px; height: 48px; opacity: 0.3; }
+    .empty-state p { font-size: 0.88rem; }
+    .empty { text-align: center; color: #4A4434; padding: 3rem; font-size: 0.85rem; }
 
-    .vantagem-card {
-      border: 1px solid #E2E8F0;
-      border-radius: 14px;
-      overflow: hidden;
-      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
-    }
-    .vantagem-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(124,58,237,0.12);
-      border-color: #DDD6FE;
-    }
-
-    .vantagem-img { height: 148px; overflow: hidden; background: #F5F3FF; }
-    .vantagem-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-    .vantagem-card:hover .vantagem-img img { transform: scale(1.04); }
-
-    .vantagem-placeholder {
-      height: 148px;
-      display: flex; align-items: center; justify-content: center;
-      background: #F5F3FF;
-      color: #A78BFA;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    .vantagem-info { padding: 1rem 1.1rem; }
-    .vantagem-info h3 { font-size: 0.9rem; font-weight: 600; color: #0F172A; margin: 0 0 0.5rem; line-height: 1.4; }
-
-    .vantagem-custo {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-weight: 700;
-      color: #7C3AED;
-      font-size: 0.9rem;
-    }
-
-    .custo-icon {
-      width: 22px; height: 22px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #F59E0B, #D97706);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.68rem;
-      font-weight: 900;
-      color: #fff;
-    }
-
-    /* ── Form ── */
-    .form-group { margin-bottom: 1rem; }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.35rem;
-      font-weight: 600;
-      font-size: 0.8rem;
-      color: #374151;
-      letter-spacing: 0.2px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 0.7rem 0.9rem;
-      border: 1.5px solid #E2E8F0;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-family: inherit;
-      outline: none;
-      box-sizing: border-box;
-      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-      color: #0F172A;
-      background: #FAFAFA;
-    }
-    .form-group input:focus {
-      border-color: #7C3AED;
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
-    }
-    .form-group input::placeholder { color: #94A3B8; }
-
-    /* ── Buttons ── */
-    .btn-primary {
-      padding: 0.75rem 2rem;
-      background: #7C3AED;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-      box-shadow: 0 1px 2px rgba(124,58,237,0.3);
-    }
-    .btn-primary:hover:not(:disabled) {
-      background: #6D28D9;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(124,58,237,0.35);
-    }
-    .btn-primary:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
-
-    .empty-state { text-align: center; color: #94A3B8; padding: 3rem; font-size: 0.9rem; }
-
-    /* ── Alerts ── */
-    .alert { padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 1rem; font-size: 0.875rem; font-weight: 500; }
-    .alert-danger { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
-    .alert-success { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+    /* ALERTS */
+    .alert { padding: 0.7rem 0.9rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.82rem; font-weight: 500; }
+    .alert-err { background: rgba(239,68,68,0.08); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
+    .alert-ok  { background: rgba(34,197,94,0.08);  color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
 
     @media (max-width: 640px) {
-      .header-inner { flex-wrap: wrap; height: auto; padding: 0.75rem 1rem; gap: 0.5rem; }
+      .sidebar { display: none; }
       .tabs { flex-direction: column; }
-      .card { padding: 1.25rem; }
-      .vantagens-grid { grid-template-columns: 1fr; }
+      .row-2 { grid-template-columns: 1fr; }
+      .vant-grid { grid-template-columns: 1fr; }
     }
   `]
 })
 export class EmpresaDashboardComponent implements OnInit {
   tab = 'vantagens';
-  userName = '';
-  userId = '';
-  vantagens: VantagemResponse[] = [];
+  userName = ''; empresaId = '';
 
-  cadDescricao = '';
-  cadFotoUrl = '';
-  cadCusto: number | null = null;
-  cadErro = '';
-  cadSucesso = '';
-  cadLoading = false;
+  vantagens: VantagemResponse[] = [];
+  resgates: any[] = [];
+
+  novDescricao = ''; novCustoMoedas: number | null = null; novFotoUrl = '';
+  novErro = ''; novSucesso = ''; novLoading = false;
 
   constructor(
     private authService: AuthService,
@@ -335,48 +381,40 @@ export class EmpresaDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.authService.getUserId() || '';
+    this.empresaId = this.authService.getUserId() || '';
     this.authService.currentUser$.subscribe(u => this.userName = u?.nome || '');
     this.carregarVantagens();
   }
 
   carregarVantagens(): void {
-    this.apiService.listarVantagens(this.userId).subscribe({
-      next: (data) => this.vantagens = data,
-      error: () => {}
+    this.apiService.listarVantagens(this.empresaId).subscribe({
+      next: (data: VantagemResponse[]) => this.vantagens = data, error: () => {}
     });
+  }
+
+  carregarResgates(): void {
+    this.resgates = [];
   }
 
   cadastrarVantagem(): void {
-    if (!this.cadDescricao.trim() || !this.cadFotoUrl.trim() || !this.cadCusto) {
-      this.cadErro = 'Preencha todos os campos';
-      return;
+    if (!this.novDescricao.trim() || !this.novCustoMoedas) {
+      this.novErro = 'Preencha a descrição e o custo em moedas.'; return;
     }
-    this.cadLoading = true;
-    this.cadErro = '';
-    this.cadSucesso = '';
-    this.apiService.adicionarVantagem(this.userId, {
-      descricao: this.cadDescricao,
-      fotoUrl: this.cadFotoUrl,
-      custoMoedas: this.cadCusto
+    this.novLoading = true; this.novErro = ''; this.novSucesso = '';
+    this.apiService.adicionarVantagem(this.empresaId, {
+      descricao: this.novDescricao,
+      custoMoedas: this.novCustoMoedas,
+      fotoUrl: this.novFotoUrl || ''
     }).subscribe({
       next: () => {
-        this.cadLoading = false;
-        this.cadSucesso = 'Vantagem cadastrada com sucesso!';
-        this.cadDescricao = '';
-        this.cadFotoUrl = '';
-        this.cadCusto = null;
+        this.novLoading = false;
+        this.novSucesso = 'Vantagem cadastrada com sucesso!';
+        this.novDescricao = ''; this.novCustoMoedas = null; this.novFotoUrl = '';
         this.carregarVantagens();
       },
-      error: (err) => {
-        this.cadLoading = false;
-        this.cadErro = err.error?.error || 'Erro ao cadastrar vantagem';
-      }
+      error: (err: any) => { this.novLoading = false; this.novErro = err.error?.error || 'Erro ao cadastrar'; }
     });
   }
 
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
-  }
+  logout(): void { this.authService.logout(); this.router.navigate(['/login']); }
 }

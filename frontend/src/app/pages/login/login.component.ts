@@ -9,79 +9,84 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <div class="login-page">
+    <div class="page">
 
-      <div class="login-left">
-        <div class="deco-circle dc-1"></div>
-        <div class="deco-circle dc-2"></div>
-        <div class="deco-circle dc-3"></div>
+      <!-- LEFT PANEL -->
+      <div class="left">
+        <div class="deco dc-1"></div>
+        <div class="deco dc-2"></div>
 
-        <div class="brand-content">
+        <div class="brand-wrap">
           <div class="coin-logo">
-            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" width="90" height="90">
-              <circle cx="40" cy="40" r="38" fill="#f9a825" stroke="#e65100" stroke-width="2.5"/>
-              <circle cx="40" cy="40" r="29" fill="none" stroke="#fff8e1" stroke-width="2"/>
-              <text x="40" y="48" font-size="17" text-anchor="middle" fill="#7f3500"
-                    font-weight="900" font-family="Segoe UI, sans-serif">ME</text>
+            <svg viewBox="0 0 80 80" fill="none" width="80" height="80">
+              <circle cx="40" cy="40" r="38" fill="#0D0B06" stroke="#F5C842" stroke-width="2"/>
+              <circle cx="40" cy="40" r="28" fill="none" stroke="#C8961E" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <text x="40" y="47" font-size="18" text-anchor="middle" fill="#F5C842"
+                    font-weight="900" font-family="Segoe UI,sans-serif">$</text>
             </svg>
           </div>
 
-          <h1 class="brand-title">Moeda<br>Estudantil</h1>
-          <p class="brand-tagline">
-            Reconhecendo o merito academico<br>com recompensas reais
-          </p>
+          <h1 class="brand-name">STUDENT<br>PERKS <span>🎓</span></h1>
+          <p class="brand-sub">Reconhecendo o mérito acadêmico<br>com recompensas reais</p>
 
-          <ul class="brand-features">
+          <ul class="features">
             <li>
-              <span class="feat-icon feat-grad"></span>
-              <span>Professores reconhecem alunos com moedas virtuais</span>
+              <span class="feat-dot feat-green"></span>
+              Professores reconhecem alunos com moedas virtuais
             </li>
             <li>
-              <span class="feat-icon feat-coin"></span>
-              <span>Troque moedas por vantagens exclusivas</span>
+              <span class="feat-dot feat-gold"></span>
+              Troque moedas por vantagens exclusivas
             </li>
             <li>
-              <span class="feat-icon feat-biz"></span>
-              <span>Empresas parceiras oferecem beneficios reais</span>
+              <span class="feat-dot feat-blue"></span>
+              Empresas parceiras oferecem benefícios reais
             </li>
           </ul>
         </div>
       </div>
 
-      <div class="login-right">
-        <div class="login-card">
+      <!-- RIGHT PANEL -->
+      <div class="right">
+        <div class="card">
 
-          <div class="login-card-header">
-            <div class="login-coin-sm">ME</div>
+          <div class="card-head">
+            <div class="card-coin">$</div>
             <div>
               <h2>Moeda Estudantil</h2>
-              <p>Faca login para continuar</p>
+              <p>Faça login para continuar</p>
             </div>
           </div>
 
-          <div *ngIf="erro" class="alert alert-danger">{{ erro }}</div>
+          <div *ngIf="erro" class="alert-err">{{ erro }}</div>
 
           <form (ngSubmit)="onLogin()">
-            <div class="form-group">
+            <div class="fg">
               <label for="email">Email</label>
               <input type="email" id="email" [(ngModel)]="email" name="email"
-                     required placeholder="seu&#64;email.com">
+                     required placeholder="seu@email.com">
             </div>
-            <div class="form-group">
+            <div class="fg">
               <label for="senha">Senha</label>
-              <input type="password" id="senha" [(ngModel)]="senha" name="senha"
-                     required placeholder="Sua senha">
+              <div class="input-eye">
+                <input [type]="mostrarSenha ? 'text' : 'password'" id="senha" [(ngModel)]="senha"
+                       name="senha" required placeholder="Sua senha">
+                <button type="button" class="eye-btn" (click)="mostrarSenha = !mostrarSenha" tabindex="-1">
+                  <svg *ngIf="!mostrarSenha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg *ngIf="mostrarSenha"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
             </div>
             <button type="submit" [disabled]="loading" class="btn-login">
               {{ loading ? 'Entrando...' : 'Entrar' }}
             </button>
           </form>
 
-          <div class="links">
-            <p>Nao tem conta? Cadastre-se:</p>
-            <div class="register-links">
-              <a routerLink="/cadastro-aluno" class="reg-link reg-aluno">Sou Aluno</a>
-              <a routerLink="/cadastro-empresa" class="reg-link reg-empresa">Sou Empresa</a>
+          <div class="reg-links">
+            <p>Não tem conta? Cadastre-se:</p>
+            <div class="reg-row">
+              <a routerLink="/cadastro-aluno" class="reg-btn">Sou Aluno</a>
+              <a routerLink="/cadastro-empresa" class="reg-btn">Sou Empresa</a>
             </div>
           </div>
 
@@ -90,15 +95,20 @@ import { AuthService } from '../../services/auth.service';
     </div>
   `,
   styles: [`
-    .login-page {
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .page {
       display: flex;
       min-height: 100vh;
+      background: #0D0B06;
+      font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
-    /* ── Left panel ── */
-    .login-left {
+    /* ── LEFT ── */
+    .left {
       flex: 0 0 44%;
-      background: linear-gradient(145deg, #0A0F2E 0%, #1a237e 55%, #1565c0 100%);
+      background: #131108;
+      border-right: 1px solid #2A2618;
       position: relative;
       overflow: hidden;
       display: flex;
@@ -107,20 +117,18 @@ import { AuthService } from '../../services/auth.service';
       padding: 3rem 2.5rem;
     }
 
-    .deco-circle {
+    .deco {
       position: absolute;
       border-radius: 50%;
-      background: radial-gradient(circle, #F59E0B, #D97706);
+      background: radial-gradient(circle, #C8961E, #0D0B06);
       pointer-events: none;
     }
-    .dc-1 { width: 420px; height: 420px; top: -140px; right: -150px; opacity: 0.09; }
-    .dc-2 { width: 280px; height: 280px; bottom: -100px; left: -100px; opacity: 0.07; }
-    .dc-3 { width: 160px; height: 160px; top: 52%; left: 68%; opacity: 0.05; }
+    .dc-1 { width: 440px; height: 440px; top: -160px; right: -160px; opacity: 0.06; }
+    .dc-2 { width: 300px; height: 300px; bottom: -120px; left: -120px; opacity: 0.05; }
 
-    .brand-content {
+    .brand-wrap {
       position: relative;
       z-index: 1;
-      color: #fff;
       text-align: center;
       max-width: 360px;
     }
@@ -128,224 +136,189 @@ import { AuthService } from '../../services/auth.service';
     .coin-logo {
       display: flex;
       justify-content: center;
-      margin-bottom: 2rem;
-      filter: drop-shadow(0 6px 20px rgba(245,158,11,0.6));
+      margin-bottom: 1.75rem;
+      filter: drop-shadow(0 4px 20px rgba(245,200,66,0.35));
       animation: float 4s ease-in-out infinite;
     }
-
     @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
     }
 
-    .brand-title {
-      font-size: 2.8rem;
+    .brand-name {
+      font-size: 2.6rem;
       font-weight: 900;
       line-height: 1.1;
+      color: #F5C842;
+      letter-spacing: 1px;
       margin-bottom: 0.75rem;
-      letter-spacing: -1px;
+      text-shadow: 0 0 30px rgba(245,200,66,0.2);
     }
+    .brand-name span { font-size: 2rem; }
 
-    .brand-tagline {
-      font-size: 0.95rem;
-      opacity: 0.78;
-      margin-bottom: 2.5rem;
+    .brand-sub {
+      font-size: 0.88rem;
+      color: #7A7260;
       line-height: 1.7;
+      margin-bottom: 2rem;
     }
 
-    .brand-features { list-style: none; text-align: left; }
-
-    .brand-features li {
+    .features { list-style: none; text-align: left; }
+    .features li {
       display: flex;
       align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 0.65rem;
-      font-size: 0.875rem;
-      opacity: 0.92;
-      background: rgba(255,255,255,0.07);
-      backdrop-filter: blur(4px);
+      gap: 0.75rem;
+      font-size: 0.82rem;
+      color: #B0A890;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid #2A2618;
       padding: 0.65rem 1rem;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: background 0.2s;
+      border-radius: 9px;
+      margin-bottom: 0.5rem;
+      transition: background 0.15s;
     }
-    .brand-features li:hover { background: rgba(255,255,255,0.12); }
+    .features li:hover { background: rgba(200,150,30,0.04); }
 
-    .feat-icon {
-      width: 28px; height: 28px;
-      border-radius: 8px;
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .feat-grad { background: linear-gradient(135deg,#059669,#047857); }
-    .feat-coin { background: linear-gradient(135deg,#F59E0B,#D97706); }
-    .feat-biz  { background: linear-gradient(135deg,#7C3AED,#6D28D9); }
+    .feat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .feat-green { background: #22C55E; box-shadow: 0 0 6px rgba(34,197,94,0.5); }
+    .feat-gold  { background: #F5C842; box-shadow: 0 0 6px rgba(245,200,66,0.5); }
+    .feat-blue  { background: #3B82F6; box-shadow: 0 0 6px rgba(59,130,246,0.5); }
 
-    /* ── Right panel ── */
-    .login-right {
+    /* ── RIGHT ── */
+    .right {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #F1F5F9;
       padding: 2rem;
     }
 
-    .login-card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 2.75rem;
+    .card {
+      background: #1A1810;
+      border: 1px solid #2A2618;
+      border-radius: 16px;
+      padding: 2.5rem;
       width: 100%;
-      max-width: 430px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 20px 40px rgba(0,0,0,0.08);
+      max-width: 420px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     }
 
-    .login-card-header {
+    .card-head {
       display: flex;
       align-items: center;
       gap: 1rem;
       margin-bottom: 2rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid #F1F5F9;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #2A2618;
     }
 
-    .login-coin-sm {
-      width: 50px; height: 50px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #F59E0B, #D97706);
-      color: #fff;
+    .card-coin {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06;
       font-weight: 900;
-      font-size: 0.95rem;
+      font-size: 1.1rem;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(245,158,11,0.4);
-      letter-spacing: 0.5px;
+      box-shadow: 0 4px 14px rgba(200,150,30,0.4);
     }
 
-    .login-card-header h2 {
-      font-size: 1.05rem;
-      color: #0F172A;
-      margin: 0;
-      font-weight: 700;
-    }
+    .card-head h2 { font-size: 1rem; font-weight: 700; color: #F0EDE5; }
+    .card-head p  { font-size: 0.78rem; color: #7A7260; margin-top: 0.1rem; }
 
-    .login-card-header p {
+    .alert-err {
+      background: rgba(239,68,68,0.08);
+      color: #EF4444;
+      border: 1px solid rgba(239,68,68,0.2);
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
       font-size: 0.82rem;
-      color: #64748B;
-      margin: 0.15rem 0 0;
+      font-weight: 500;
+      margin-bottom: 1rem;
     }
 
-    .form-group { margin-bottom: 1.1rem; }
-
-    .form-group label {
+    .fg { margin-bottom: 1rem; }
+    .fg label {
       display: block;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      font-size: 0.82rem;
-      color: #374151;
-      letter-spacing: 0.2px;
+      color: #7A7260;
+      letter-spacing: 0.3px;
     }
-
-    .form-group input {
+    .fg input {
       width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1.5px solid #E2E8F0;
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 0.7rem 0.9rem;
+      background: #0D0B06;
+      border: 1px solid #3A3220;
+      border-radius: 9px;
+      font-size: 0.9rem;
       font-family: inherit;
-      box-sizing: border-box;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      color: #F0EDE5;
       outline: none;
-      color: #0F172A;
-      background: #FAFAFA;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      box-sizing: border-box;
     }
-    .form-group input:focus {
-      border-color: #2563EB;
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    .fg input:focus { border-color: #C8961E; box-shadow: 0 0 0 3px rgba(200,150,30,0.12); }
+    .fg input::placeholder { color: #4A4434; }
+
+    .input-eye { position: relative; display: flex; align-items: center; }
+    .input-eye input { padding-right: 2.75rem; }
+    .eye-btn {
+      position: absolute; right: 0.75rem;
+      background: none; border: none; cursor: pointer; padding: 0;
+      color: #4A4434; display: flex; align-items: center; transition: color 0.15s;
     }
-    .form-group input::placeholder { color: #94A3B8; }
+    .eye-btn:hover { color: #C8961E; }
+    .eye-btn svg { width: 17px; height: 17px; }
 
     .btn-login {
       width: 100%;
-      padding: 0.85rem;
-      background: #2563EB;
-      color: #fff;
+      padding: 0.82rem;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06;
       border: none;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      border-radius: 9px;
+      font-size: 0.92rem;
+      font-weight: 800;
       font-family: inherit;
       cursor: pointer;
-      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      transition: opacity 0.15s, transform 0.1s;
       margin-top: 0.5rem;
-      letter-spacing: 0.2px;
-      box-shadow: 0 1px 2px rgba(37,99,235,0.3);
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 16px rgba(200,150,30,0.3);
     }
-    .btn-login:hover:not(:disabled) {
-      background: #1D4ED8;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(37,99,235,0.35);
-    }
-    .btn-login:active:not(:disabled) { transform: translateY(0); }
-    .btn-login:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
+    .btn-login:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .btn-login:disabled { background: #2A2618; color: #5A5244; cursor: not-allowed; box-shadow: none; }
 
-    .alert-danger {
-      background: #FEF2F2;
-      color: #DC2626;
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
-      border: 1px solid #FECACA;
-      margin-bottom: 1rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
+    .reg-links { margin-top: 1.75rem; text-align: center; }
+    .reg-links p { font-size: 0.8rem; color: #5A5244; margin-bottom: 0.75rem; }
+    .reg-row { display: flex; gap: 0.6rem; justify-content: center; }
 
-    .links { margin-top: 1.75rem; text-align: center; }
-
-    .links p {
-      color: #64748B;
-      font-size: 0.85rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .register-links { display: flex; gap: 0.65rem; justify-content: center; }
-
-    .reg-link {
+    .reg-btn {
       flex: 1;
-      padding: 0.6rem 1rem;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-decoration: none !important;
-      transition: all 0.15s;
-      border: 1.5px solid transparent;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
       text-align: center;
+      transition: all 0.15s;
+      background: rgba(200,150,30,0.07);
+      color: #C8961E;
+      border: 1px solid #3A3220;
     }
-
-    .reg-aluno {
-      background: #EFF6FF;
-      color: #2563EB;
-      border-color: #BFDBFE;
-    }
-    .reg-aluno:hover { background: #2563EB; color: #fff; border-color: #2563EB; }
-
-    .reg-empresa {
-      background: #F5F3FF;
-      color: #7C3AED;
-      border-color: #DDD6FE;
-    }
-    .reg-empresa:hover { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+    .reg-btn:hover { background: linear-gradient(135deg,#C8961E,#F5C842); color: #0D0B06; border-color: #C8961E; }
 
     @media (max-width: 768px) {
-      .login-page { flex-direction: column; }
-      .login-left { flex: none; padding: 2rem 1.5rem; min-height: auto; }
-      .brand-features { display: none; }
-      .brand-title { font-size: 2rem; }
-      .brand-tagline { margin-bottom: 0; }
+      .page { flex-direction: column; }
+      .left { flex: none; padding: 2rem 1.5rem; }
+      .features { display: none; }
+      .brand-name { font-size: 1.8rem; }
       .coin-logo { animation: none; }
-      .login-right { padding: 1.5rem 1rem; }
-      .login-card { padding: 2rem; border-radius: 16px; }
+      .right { padding: 1.5rem 1rem; }
+      .card { padding: 1.75rem; }
     }
   `]
 })
@@ -354,6 +327,7 @@ export class LoginComponent {
   senha = '';
   erro = '';
   loading = false;
+  mostrarSenha = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -364,14 +338,14 @@ export class LoginComponent {
       next: (user) => {
         this.loading = false;
         switch (user.papel) {
-          case 'ALUNO': this.router.navigate(['/aluno']); break;
+          case 'ALUNO':     this.router.navigate(['/aluno']);     break;
           case 'PROFESSOR': this.router.navigate(['/professor']); break;
-          case 'EMPRESA': this.router.navigate(['/empresa']); break;
+          case 'EMPRESA':   this.router.navigate(['/empresa']);   break;
         }
       },
       error: (err) => {
         this.loading = false;
-        this.erro = err.error?.error || 'Credenciais invalidas';
+        this.erro = err.error?.error || 'Credenciais inválidas';
       }
     });
   }

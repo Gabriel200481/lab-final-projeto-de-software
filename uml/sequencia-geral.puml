@@ -12,7 +12,7 @@ participant "EmpresaController" as EC
 participant "ResgateController" as RC
 participant "ExtratoController" as XC
 participant "Service + Repository" as BE
-participant "Fila de Mensagens" as MQ
+queue "Fila de Mensagens" as MQ
 participant "QrCodeService" as QR
 participant "NotificacaoService" as NS
 

@@ -10,48 +10,50 @@ import { ApiService } from '../../services/api.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <div class="register-page">
-      <div class="deco-circle dc-1"></div>
-      <div class="deco-circle dc-2"></div>
-      <div class="deco-circle dc-3"></div>
+    <div class="page">
+      <div class="deco dc-1"></div>
+      <div class="deco dc-2"></div>
 
-      <div class="register-wrapper">
-        <div class="register-card">
+      <div class="wrap">
+        <div class="card">
 
-          <div class="card-header">
-            <a routerLink="/login" class="back-link">&larr; Voltar ao Login</a>
+          <div class="card-top">
+            <a routerLink="/login" class="back">&larr; Voltar ao Login</a>
           </div>
 
-          <div class="card-brand">
-            <div class="brand-icon brand-empresa">E</div>
+          <div class="card-head">
+            <div class="head-coin">E</div>
             <div>
               <h1>Cadastro de Empresa Parceira</h1>
-              <p>Ofereca vantagens e atraia novos clientes</p>
+              <p>Ofereça vantagens e atraia novos clientes</p>
             </div>
           </div>
 
-          <div *ngIf="erro" class="alert alert-danger">{{ erro }}</div>
-          <div *ngIf="sucesso" class="alert alert-success">{{ sucesso }}</div>
+          <div *ngIf="erro"    class="alert alert-err">{{ erro }}</div>
+          <div *ngIf="sucesso" class="alert alert-ok">{{ sucesso }}</div>
 
           <form (ngSubmit)="onSubmit()">
-            <div class="form-group">
-              <label for="nome">Razao Social</label>
-              <input id="nome" [(ngModel)]="nome" name="nome" required placeholder="Razao social da empresa">
+            <div class="fg">
+              <label>Razão Social</label>
+              <input [(ngModel)]="nome" name="nome" required placeholder="Razão social da empresa">
             </div>
-
-            <div class="form-group">
-              <label for="nomeFantasia">Nome Fantasia</label>
-              <input id="nomeFantasia" [(ngModel)]="nomeFantasia" name="nomeFantasia" placeholder="Nome fantasia (opcional)">
+            <div class="fg">
+              <label>Nome Fantasia</label>
+              <input [(ngModel)]="nomeFantasia" name="nomeFantasia" placeholder="Nome fantasia (opcional)">
             </div>
-
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" [(ngModel)]="email" name="email" required placeholder="empresa&#64;email.com">
+            <div class="fg">
+              <label>Email</label>
+              <input type="email" [(ngModel)]="email" name="email" required placeholder="empresa@email.com">
             </div>
-
-            <div class="form-group">
-              <label for="senha">Senha</label>
-              <input type="password" id="senha" [(ngModel)]="senha" name="senha" required placeholder="Crie uma senha">
+            <div class="fg">
+              <label>Senha</label>
+              <div class="input-eye">
+                <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" name="senha" required placeholder="Crie uma senha">
+                <button type="button" class="eye-btn" (click)="mostrarSenha = !mostrarSenha" tabindex="-1">
+                  <svg *ngIf="!mostrarSenha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg *ngIf="mostrarSenha"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
             </div>
 
             <button type="submit" [disabled]="loading" class="btn-submit">
@@ -64,171 +66,129 @@ import { ApiService } from '../../services/api.service';
     </div>
   `,
   styles: [`
-    .register-page {
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .page {
       min-height: 100vh;
-      background: linear-gradient(145deg, #0A0F2E 0%, #1a237e 55%, #1565c0 100%);
+      background: #0D0B06;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
-      padding: 2.5rem 1rem 4rem;
+      padding: 2.5rem 1rem;
       position: relative;
       overflow: hidden;
+      font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
-    .deco-circle {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle, #F59E0B, #D97706);
+    .deco {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, #C8961E, #0D0B06);
       pointer-events: none;
     }
-    .dc-1 { width: 500px; height: 500px; top: -180px; right: -180px; opacity: 0.07; }
-    .dc-2 { width: 300px; height: 300px; bottom: -100px; left: -100px; opacity: 0.06; }
-    .dc-3 { width: 180px; height: 180px; top: 55%; left: 72%; opacity: 0.04; }
+    .dc-1 { width: 500px; height: 500px; top: -180px; right: -180px; opacity: 0.05; }
+    .dc-2 { width: 320px; height: 320px; bottom: -120px; left: -120px; opacity: 0.04; }
 
-    .register-wrapper {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 540px;
+    .wrap { position: relative; z-index: 1; width: 100%; max-width: 520px; }
+
+    .card {
+      background: #1A1810;
+      border: 1px solid #2A2618;
+      border-top: 3px solid #C8961E;
+      border-radius: 16px;
+      padding: 2rem 2.5rem 2.5rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     }
 
-    .register-card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 2.25rem 2.75rem 2.75rem;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.12), 0 32px 64px rgba(0,0,0,0.16);
-      border-top: 4px solid #7C3AED;
+    .card-top { margin-bottom: 1.5rem; }
+    .back {
+      font-size: 0.8rem; color: #5A5244;
+      text-decoration: none; font-weight: 500; transition: color 0.15s;
+    }
+    .back:hover { color: #F5C842; }
+
+    .card-head {
+      display: flex; align-items: center; gap: 1rem;
+      margin-bottom: 1.75rem; padding-bottom: 1.25rem;
+      border-bottom: 1px solid #2A2618;
     }
 
-    .card-header { margin-bottom: 1.5rem; }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.875rem;
-      color: #64748B;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.15s;
-    }
-    .back-link:hover { color: #2563EB; }
-
-    .card-brand {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid #F1F5F9;
-    }
-
-    .brand-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
+    .head-coin {
+      width: 50px; height: 50px; border-radius: 13px;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06; font-weight: 900; font-size: 1.3rem;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 900;
-      font-size: 1.4rem;
-      color: #fff;
-      flex-shrink: 0;
+      flex-shrink: 0; box-shadow: 0 4px 14px rgba(200,150,30,0.35);
     }
-    .brand-empresa { background: linear-gradient(135deg, #7C3AED, #6D28D9); box-shadow: 0 4px 12px rgba(124,58,237,0.35); }
 
-    .card-brand h1 { font-size: 1.2rem; font-weight: 700; color: #0F172A; margin: 0; }
-    .card-brand p { font-size: 0.85rem; color: #64748B; margin: 0.2rem 0 0; }
+    .card-head h1 { font-size: 1.05rem; font-weight: 700; color: #F0EDE5; }
+    .card-head p  { font-size: 0.78rem; color: #7A7260; margin-top: 0.15rem; }
 
     .alert {
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
-      font-size: 0.875rem;
-      font-weight: 500;
+      padding: 0.7rem 0.9rem; border-radius: 8px;
+      margin-bottom: 1rem; font-size: 0.82rem; font-weight: 500;
     }
-    .alert-danger { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
-    .alert-success { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+    .alert-err { background: rgba(239,68,68,0.08); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
+    .alert-ok  { background: rgba(34,197,94,0.08);  color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
 
-    .form-group { margin-bottom: 1rem; }
+    .fg { margin-bottom: 1rem; }
+    .fg label {
+      display: block; margin-bottom: 0.35rem;
+      font-size: 0.75rem; font-weight: 600; color: #7A7260; letter-spacing: 0.3px;
+    }
+    .fg input {
+      width: 100%; padding: 0.7rem 0.9rem;
+      background: #0D0B06; border: 1px solid #3A3220; border-radius: 9px;
+      font-size: 0.9rem; font-family: inherit; color: #F0EDE5;
+      outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .fg input:focus { border-color: #C8961E; box-shadow: 0 0 0 3px rgba(200,150,30,0.1); }
+    .fg input::placeholder { color: #4A4434; }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 0.4rem;
-      font-weight: 600;
-      font-size: 0.8rem;
-      color: #374151;
-      letter-spacing: 0.2px;
+    .input-eye { position: relative; display: flex; align-items: center; }
+    .input-eye input { padding-right: 2.75rem; }
+    .eye-btn {
+      position: absolute; right: 0.75rem;
+      background: none; border: none; cursor: pointer; padding: 0;
+      color: #4A4434; display: flex; align-items: center; transition: color 0.15s;
     }
-
-    .form-group input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1.5px solid #E2E8F0;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-      box-sizing: border-box;
-      color: #0F172A;
-      background: #FAFAFA;
-    }
-    .form-group input:focus {
-      border-color: #7C3AED;
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
-    }
-    .form-group input::placeholder { color: #94A3B8; }
+    .eye-btn:hover { color: #C8961E; }
+    .eye-btn svg { width: 17px; height: 17px; }
 
     .btn-submit {
-      width: 100%;
-      padding: 0.85rem;
-      background: #7C3AED;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      margin-top: 0.75rem;
-      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-      box-shadow: 0 1px 2px rgba(124,58,237,0.3);
+      width: 100%; padding: 0.82rem;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06; border: none; border-radius: 9px;
+      font-size: 0.92rem; font-weight: 800; font-family: inherit;
+      cursor: pointer; margin-top: 0.5rem;
+      transition: opacity 0.15s, transform 0.1s;
+      box-shadow: 0 4px 16px rgba(200,150,30,0.28);
     }
-    .btn-submit:hover:not(:disabled) {
-      background: #6D28D9;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(124,58,237,0.35);
-    }
-    .btn-submit:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
+    .btn-submit:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .btn-submit:disabled { background: #2A2618; color: #5A5244; cursor: not-allowed; box-shadow: none; }
 
-    @media (max-width: 640px) {
-      .register-card { padding: 1.75rem; }
-    }
+    @media (max-width: 640px) { .card { padding: 1.5rem; } }
   `]
 })
 export class CadastroEmpresaComponent {
-  nome = '';
-  nomeFantasia = '';
-  email = '';
-  senha = '';
-  erro = '';
-  sucesso = '';
-  loading = false;
+  mostrarSenha = false;
+  nome = ''; nomeFantasia = ''; email = ''; senha = '';
+  erro = ''; sucesso = ''; loading = false;
 
-  constructor(private authService: AuthService, private apiService: ApiService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private apiService: ApiService,
+    private router: Router
+  ) {}
 
   onSubmit(): void {
-    this.loading = true;
-    this.erro = '';
-    this.sucesso = '';
+    this.loading = true; this.erro = ''; this.sucesso = '';
     this.apiService.criarEmpresa({
-      nome: this.nome,
-      nomeFantasia: this.nomeFantasia,
-      email: this.email,
-      senha: this.senha
+      nome: this.nome, nomeFantasia: this.nomeFantasia,
+      email: this.email, senha: this.senha
     }).subscribe({
       next: () => {
         this.loading = false;
-        this.sucesso = 'Cadastro realizado com sucesso! Redirecionando...';
+        this.sucesso = 'Cadastro realizado! Redirecionando...';
         setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err: any) => {

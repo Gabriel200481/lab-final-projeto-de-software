@@ -5,82 +5,84 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 
-interface Instituicao {
-  id: string;
-  nome: string;
-}
+interface Instituicao { id: string; nome: string; }
 
 @Component({
   selector: 'app-cadastro-aluno',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <div class="register-page">
-      <div class="deco-circle dc-1"></div>
-      <div class="deco-circle dc-2"></div>
-      <div class="deco-circle dc-3"></div>
+    <div class="page">
+      <div class="deco dc-1"></div>
+      <div class="deco dc-2"></div>
 
-      <div class="register-wrapper">
-        <div class="register-card">
+      <div class="wrap">
+        <div class="card">
 
-          <div class="card-header">
-            <a routerLink="/login" class="back-link">&larr; Voltar ao Login</a>
+          <div class="card-top">
+            <a routerLink="/login" class="back">&larr; Voltar ao Login</a>
           </div>
 
-          <div class="card-brand">
-            <div class="brand-icon brand-aluno">A</div>
+          <div class="card-head">
+            <div class="head-coin">A</div>
             <div>
               <h1>Cadastro de Aluno</h1>
               <p>Crie sua conta e comece a acumular moedas</p>
             </div>
           </div>
 
-          <div *ngIf="erro" class="alert alert-danger">{{ erro }}</div>
-          <div *ngIf="sucesso" class="alert alert-success">{{ sucesso }}</div>
+          <div *ngIf="erro"    class="alert alert-err">{{ erro }}</div>
+          <div *ngIf="sucesso" class="alert alert-ok">{{ sucesso }}</div>
 
           <form (ngSubmit)="onSubmit()">
-            <div class="form-grid">
+            <div class="grid">
 
-              <div class="form-group">
-                <label for="nome">Nome completo</label>
-                <input id="nome" [(ngModel)]="nome" name="nome" required placeholder="Seu nome completo">
+              <div class="fg">
+                <label>Nome completo</label>
+                <input [(ngModel)]="nome" name="nome" required placeholder="Seu nome completo">
               </div>
 
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" [(ngModel)]="email" name="email" required placeholder="seu&#64;email.com">
+              <div class="fg">
+                <label>Email</label>
+                <input type="email" [(ngModel)]="email" name="email" required placeholder="seu@email.com">
               </div>
 
-              <div class="form-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" [(ngModel)]="senha" name="senha" required placeholder="Crie uma senha">
+              <div class="fg">
+                <label>Senha</label>
+                <div class="input-eye">
+                  <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="senha" name="senha" required placeholder="Crie uma senha">
+                  <button type="button" class="eye-btn" (click)="mostrarSenha = !mostrarSenha" tabindex="-1">
+                    <svg *ngIf="!mostrarSenha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg *ngIf="mostrarSenha"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  </button>
+                </div>
               </div>
 
-              <div class="form-group">
-                <label for="cpf">CPF</label>
-                <input id="cpf" [(ngModel)]="cpf" name="cpf" required placeholder="000.000.000-00">
+              <div class="fg">
+                <label>CPF</label>
+                <input [(ngModel)]="cpf" name="cpf" required placeholder="000.000.000-00">
               </div>
 
-              <div class="form-group">
-                <label for="rg">RG</label>
-                <input id="rg" [(ngModel)]="rg" name="rg" required placeholder="Seu RG">
+              <div class="fg">
+                <label>RG</label>
+                <input [(ngModel)]="rg" name="rg" required placeholder="Seu RG">
               </div>
 
-              <div class="form-group">
-                <label for="endereco">Endereco</label>
-                <input id="endereco" [(ngModel)]="endereco" name="endereco" required placeholder="Seu endereco">
+              <div class="fg">
+                <label>Endereço</label>
+                <input [(ngModel)]="endereco" name="endereco" required placeholder="Seu endereço">
               </div>
 
-              <div class="form-group">
-                <label for="curso">Curso</label>
-                <input id="curso" [(ngModel)]="curso" name="curso" required placeholder="Seu curso">
+              <div class="fg">
+                <label>Curso</label>
+                <input [(ngModel)]="curso" name="curso" required placeholder="Seu curso">
               </div>
 
-              <div class="form-group">
-                <label for="instituicao">Instituicao</label>
-                <select id="instituicao" [(ngModel)]="instituicaoId" name="instituicaoId" required>
-                  <option value="" disabled selected>Selecione a instituicao</option>
-                  <option *ngFor="let inst of instituicoes" [value]="inst.id">{{ inst.nome }}</option>
+              <div class="fg">
+                <label>Instituição</label>
+                <select [(ngModel)]="instituicaoId" name="instituicaoId" required>
+                  <option value="" disabled selected>Selecione a instituição</option>
+                  <option *ngFor="let i of instituicoes" [value]="i.id">{{ i.nome }}</option>
                 </select>
               </div>
 
@@ -96,168 +98,158 @@ interface Instituicao {
     </div>
   `,
   styles: [`
-    .register-page {
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .page {
       min-height: 100vh;
-      background: linear-gradient(145deg, #0A0F2E 0%, #1a237e 55%, #1565c0 100%);
+      background: #0D0B06;
       display: flex;
       align-items: flex-start;
       justify-content: center;
       padding: 2.5rem 1rem 4rem;
       position: relative;
       overflow: hidden;
+      font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
-    .deco-circle {
+    .deco {
       position: absolute;
       border-radius: 50%;
-      background: radial-gradient(circle, #F59E0B, #D97706);
+      background: radial-gradient(circle, #C8961E, #0D0B06);
       pointer-events: none;
     }
-    .dc-1 { width: 500px; height: 500px; top: -180px; right: -180px; opacity: 0.07; }
-    .dc-2 { width: 300px; height: 300px; bottom: -100px; left: -100px; opacity: 0.06; }
-    .dc-3 { width: 180px; height: 180px; top: 55%; left: 72%; opacity: 0.04; }
+    .dc-1 { width: 500px; height: 500px; top: -180px; right: -180px; opacity: 0.05; }
+    .dc-2 { width: 320px; height: 320px; bottom: -120px; left: -120px; opacity: 0.04; }
 
-    .register-wrapper {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 700px;
+    .wrap { position: relative; z-index: 1; width: 100%; max-width: 700px; }
+
+    .card {
+      background: #1A1810;
+      border: 1px solid #2A2618;
+      border-top: 3px solid #C8961E;
+      border-radius: 16px;
+      padding: 2rem 2.5rem 2.5rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     }
 
-    .register-card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 2.25rem 2.75rem 2.75rem;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.12), 0 32px 64px rgba(0,0,0,0.16);
-      border-top: 4px solid #059669;
-    }
+    .card-top { margin-bottom: 1.5rem; }
 
-    .card-header { margin-bottom: 1.5rem; }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.875rem;
-      color: #64748B;
+    .back {
+      font-size: 0.8rem;
+      color: #5A5244;
       text-decoration: none;
       font-weight: 500;
       transition: color 0.15s;
     }
-    .back-link:hover { color: #2563EB; }
+    .back:hover { color: #F5C842; }
 
-    .card-brand {
+    .card-head {
       display: flex;
       align-items: center;
       gap: 1rem;
       margin-bottom: 1.75rem;
-      padding-bottom: 1.5rem;
-      border-bottom: 1px solid #F1F5F9;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #2A2618;
     }
 
-    .brand-icon {
-      width: 52px; height: 52px;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
+    .head-coin {
+      width: 50px; height: 50px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06;
       font-weight: 900;
-      font-size: 1.4rem;
-      color: #fff;
+      font-size: 1.3rem;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(200,150,30,0.35);
     }
-    .brand-aluno { background: linear-gradient(135deg, #2563EB, #1D4ED8); box-shadow: 0 4px 12px rgba(37,99,235,0.35); }
 
-    .card-brand h1 { font-size: 1.2rem; font-weight: 700; color: #0F172A; margin: 0; }
-    .card-brand p { font-size: 0.85rem; color: #64748B; margin: 0.2rem 0 0; }
+    .card-head h1 { font-size: 1.1rem; font-weight: 700; color: #F0EDE5; }
+    .card-head p  { font-size: 0.8rem; color: #7A7260; margin-top: 0.15rem; }
 
     .alert {
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+      border-radius: 8px;
       margin-bottom: 1rem;
-      font-size: 0.875rem;
+      font-size: 0.82rem;
       font-weight: 500;
     }
-    .alert-danger { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
-    .alert-success { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+    .alert-err { background: rgba(239,68,68,0.08); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); }
+    .alert-ok  { background: rgba(34,197,94,0.08);  color: #22C55E; border: 1px solid rgba(34,197,94,0.2); }
 
-    .form-grid {
+    .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.65rem 1.25rem;
+      gap: 0.6rem 1.1rem;
     }
 
-    .form-group { margin-bottom: 0.25rem; }
-
-    .form-group label {
+    .fg { margin-bottom: 0.2rem; }
+    .fg label {
       display: block;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.32rem;
+      font-size: 0.75rem;
       font-weight: 600;
-      font-size: 0.8rem;
-      color: #374151;
-      letter-spacing: 0.2px;
+      color: #7A7260;
+      letter-spacing: 0.3px;
     }
-
-    .form-group input,
-    .form-group select {
+    .fg input,
+    .fg select {
       width: 100%;
-      padding: 0.65rem 0.9rem;
-      border: 1.5px solid #E2E8F0;
-      border-radius: 10px;
-      font-size: 0.9rem;
+      padding: 0.62rem 0.85rem;
+      background: #0D0B06;
+      border: 1px solid #3A3220;
+      border-radius: 8px;
+      font-size: 0.87rem;
       font-family: inherit;
+      color: #F0EDE5;
       outline: none;
-      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-      box-sizing: border-box;
-      color: #0F172A;
-      background: #FAFAFA;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: #2563EB;
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    .fg input:focus,
+    .fg select:focus { border-color: #C8961E; box-shadow: 0 0 0 3px rgba(200,150,30,0.1); }
+    .fg input::placeholder { color: #4A4434; }
+    .fg select option { background: #1A1810; }
+
+    .input-eye { position: relative; display: flex; align-items: center; }
+    .input-eye input { padding-right: 2.5rem; }
+    .eye-btn {
+      position: absolute; right: 0.7rem;
+      background: none; border: none; cursor: pointer; padding: 0;
+      color: #4A4434; display: flex; align-items: center; transition: color 0.15s;
     }
-    .form-group input::placeholder { color: #94A3B8; }
+    .eye-btn:hover { color: #C8961E; }
+    .eye-btn svg { width: 16px; height: 16px; }
 
     .btn-submit {
       width: 100%;
-      padding: 0.85rem;
-      background: #059669;
-      color: #fff;
+      padding: 0.82rem;
+      background: linear-gradient(135deg, #C8961E, #F5C842);
+      color: #0D0B06;
       border: none;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      border-radius: 9px;
+      font-size: 0.92rem;
+      font-weight: 800;
       font-family: inherit;
       cursor: pointer;
       margin-top: 1.25rem;
-      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
-      box-shadow: 0 1px 2px rgba(5,150,105,0.3);
+      transition: opacity 0.15s, transform 0.1s;
+      box-shadow: 0 4px 16px rgba(200,150,30,0.28);
+      letter-spacing: 0.2px;
     }
-    .btn-submit:hover:not(:disabled) {
-      background: #047857;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(5,150,105,0.35);
-    }
-    .btn-submit:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; }
+    .btn-submit:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .btn-submit:disabled { background: #2A2618; color: #5A5244; cursor: not-allowed; box-shadow: none; }
 
     @media (max-width: 640px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .register-card { padding: 1.75rem; }
+      .grid { grid-template-columns: 1fr; }
+      .card { padding: 1.5rem; }
     }
   `]
 })
 export class CadastroAlunoComponent implements OnInit {
-  nome = '';
-  email = '';
-  senha = '';
-  cpf = '';
-  rg = '';
-  endereco = '';
-  curso = '';
-  instituicaoId = '';
-  erro = '';
-  sucesso = '';
-  loading = false;
+  mostrarSenha = false;
+  nome = ''; email = ''; senha = ''; cpf = '';
+  rg = ''; endereco = ''; curso = ''; instituicaoId = '';
+  erro = ''; sucesso = ''; loading = false;
   instituicoes: Instituicao[] = [];
 
   constructor(
@@ -274,22 +266,15 @@ export class CadastroAlunoComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.loading = true;
-    this.erro = '';
-    this.sucesso = '';
+    this.loading = true; this.erro = ''; this.sucesso = '';
     this.apiService.criarAluno({
-      nome: this.nome,
-      email: this.email,
-      senha: this.senha,
-      cpf: this.cpf,
-      rg: this.rg,
-      endereco: this.endereco,
-      curso: this.curso,
-      instituicaoId: this.instituicaoId
+      nome: this.nome, email: this.email, senha: this.senha,
+      cpf: this.cpf, rg: this.rg, endereco: this.endereco,
+      curso: this.curso, instituicaoId: this.instituicaoId
     }).subscribe({
       next: () => {
         this.loading = false;
-        this.sucesso = 'Cadastro realizado com sucesso! Redirecionando...';
+        this.sucesso = 'Cadastro realizado! Redirecionando...';
         setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err: any) => {
