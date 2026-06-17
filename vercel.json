@@ -1,8 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": "src/main/resources/static",
-  "cleanUrls": true,
+  "buildCommand": "cd frontend && npm ci && npm run build",
+  "outputDirectory": "frontend/dist/frontend/browser",
   "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://moeda-estudantil-api.onrender.com/api/:path*"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
@@ -10,12 +14,15 @@
   ],
   "headers": [
     {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
-        }
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     }
   ]
