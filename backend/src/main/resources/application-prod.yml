@@ -6,7 +6,7 @@ micronaut:
       configurations:
         web:
           allowed-origins-regex:
-            - ${APP_CORS_ALLOWED_ORIGINS_REGEX:^https://.*\.vercel\.app$}
+            - "^https://.*\\.vercel\\.app$"
           allowed-methods:
             - GET
             - POST
@@ -21,13 +21,6 @@ micronaut:
             generator:
               secret: ${JWT_SECRET:prod-secret-change-me-please-at-least-32-bytes-long-0123456789}
 
-datasources:
-  default:
-    url: ${DATABASE_URL:jdbc:h2:mem:moedaestudantil;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-    driverClassName: ${DATABASE_DRIVER:org.h2.Driver}
-    username: ${DATABASE_USERNAME:sa}
-    password: ${DATABASE_PASSWORD:}
-
 jpa:
   default:
     properties:
@@ -36,18 +29,10 @@ jpa:
           auto: update
         show_sql: false
 
-sql:
-  init:
-    enabled: false
-
 javamail:
   password: ${MAIL_PASSWORD:}
 
 app:
-  cors:
-    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:}
-    allowed-origins-regex: ${APP_CORS_ALLOWED_ORIGINS_REGEX:^https://.*\.vercel\.app$}
   qrcode:
-    basepath: ${APP_QRCODE_BASEPATH:qrcodes/}
-    baseurl: ${APP_QRCODE_BASEURL:https://seu-backend.onrender.com/api/qrcodes/}
-
+    basepath: "qrcodes/"
+    baseurl: ${APP_QRCODE_BASEURL:https://moeda-estudantil-api.onrender.com/api/qrcodes/}
