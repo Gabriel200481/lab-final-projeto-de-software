@@ -5,7 +5,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://moeda-estudantil-api.onrender.com/api/:path*"
+      "destination": "https://lab-final-projeto-de-software.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
